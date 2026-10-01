@@ -1,0 +1,19 @@
+{
+  "name": "daily-gym",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Palestra mentale personale: inglese, memoria e cultura generale.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
+    "pg": "^8.23.1"
+  }
+}
