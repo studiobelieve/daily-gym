@@ -17,7 +17,11 @@ const VOTI = [
 
 export async function avvia(box, opz) {
   svuota(box, h('div', { class: 'caricamento' }, h('div', { class: 'spinner' }), 'Preparo le carte…'));
-  const { carte } = await api.get('/api/ripasso' + (opz.tipo ? '?tipo=' + opz.tipo : ''));
+  const qs = new URLSearchParams();
+  if (opz.tipo) qs.set('tipo', opz.tipo);
+  if (opz.limite) qs.set('limite', opz.limite);
+  if (opz.difficili) qs.set('difficili', '1');
+  const { carte } = await api.get('/api/ripasso?' + qs);
   if (!carte.length) {
     return new Promise((ok) => svuota(box, h('div', { class: 'card vuoto stack' },
       h('div', { style: { fontSize: '2.4rem' } }, '🎉'),

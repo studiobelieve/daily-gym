@@ -12,8 +12,8 @@ const RISPOSTE = [
   ['correcting short texts', () => `**[VOTO]** 72
 [CORRETTO]
 Hi Mark, I am writing to confirm our meeting next Tuesday. See you soon.
-[ERRORE] I write for confirm => I am writing to confirm || Si usa il present continuous e "to" + verbo per lo scopo
-[ERRORE] the next Tuesday => next Tuesday || Con "next" non si mette l'articolo
+[ERRORE] I write for confirm => I am writing to confirm || Si usa il present continuous e "to" + verbo per lo scopo || tempi verbali
+[ERRORE] the next Tuesday => next Tuesday || Con "next" non si mette l'articolo || articoli
 [BRAVO] Il tono è cortese e chiaro.
 [CONSIGLIO] Ripassa "to" + infinito per esprimere lo scopo.
 [VERSIONE_NATURALE] Hi Mark, just confirming our meeting next Tuesday. Looking forward to it!`],
@@ -38,6 +38,10 @@ The Romans built roads, bridges and aqueducts. Many of them still exist today, a
 [DOMANDA] When did the Roman Empire start? || 27 BC || 476 AD || 100 BC
 [DOMANDA] What did the Romans build? || Roads and aqueducts || Pyramids || Castles
 [DA_RICORDARE] L'Impero romano iniziò nel 27 a.C. con Augusto, il primo imperatore.`],
+  ['targeted drills', () => `[ITEM] articoli || completa || Completa con l'articolo giusto || I work in ___ agency in Naples. || an || "agency" inizia con vocale: an
+[ITEM] articoli || correggi || Correggi la parte sbagliata || See you the next Monday. || next Monday || con "next" niente articolo
+[ITEM] tempi verbali || traduci || Traduci in inglese || Ti scrivo per confermare || I am writing to confirm | I'm writing to confirm || present continuous + to
+[ITEM] ausiliari (do/be/have) || correggi || Correggi la parte sbagliata || I am agree with you. || I agree || agree è un verbo`],
   ['concise English-Italian dictionary', (corpo) => {
     const t = (corpo.messages[0].content.match(/<testo_utente>([^<]*)</) || [])[1] || '';
     const diz = { built: ['costruirono', 'to build'], roads: ['strade', 'road'], 'built roads': ['costruirono strade', ''], empire: ['impero', ''] };
@@ -50,8 +54,8 @@ The Romans built roads, bridges and aqueducts. Many of them still exist today, a
   }],
   ['reviewing a spoken conversation', () => `[VOTO] 68
 [BRAVO] Hai risposto sempre e con frasi complete.
-[ERRORE] I work in agency => I work in an agency || Serve l'articolo "an" davanti a sostantivi singolari
-[ERRORE] I am agree => I agree || "Agree" è un verbo: niente "am"
+[ERRORE] I work in agency => I work in an agency || Serve l'articolo "an" davanti a sostantivi singolari || articoli
+[ERRORE] I am agree => I agree || "Agree" è un verbo: niente "am" || ausiliari (do/be/have)
 [FRASE] I'm in charge of => sono responsabile di
 [FRASE] It depends on => dipende da
 [FRASE] To be honest => a dire il vero
@@ -89,6 +93,13 @@ globalThis.fetch = async (input, init = {}) => {
   if (url.includes('wikipedia.org')) {
     const titolo = decodeURIComponent(url.split('titles=')[1] || 'Roman Empire');
     return new Response(JSON.stringify({ query: { pages: [{ title: titolo, fullurl: 'https://simple.wikipedia.org/wiki/' + encodeURIComponent(titolo), extract: WIKI }] } }), { status: 200, headers: { 'content-type': 'application/json' } });
+  }
+  if (url.includes('/v1/convai/agents/create')) {
+    return new Response(JSON.stringify({ agent_id: 'agent_test_123' }), { status: 200, headers: { 'content-type': 'application/json' } });
+  }
+  if (url.includes('/v1/convai/agents/')) return new Response('{}', { status: 200, headers: { 'content-type': 'application/json' } });
+  if (url.includes('/v1/convai/conversation/get-signed-url')) {
+    return new Response(JSON.stringify({ signed_url: 'wss://localhost:1/finto' }), { status: 200, headers: { 'content-type': 'application/json' } });
   }
   if (url.includes('api.elevenlabs.io/v1/speech-to-text')) {
     return new Response(JSON.stringify({ text: 'I work in agency and I am agree with you.' }), { status: 200, headers: { 'content-type': 'application/json' } });

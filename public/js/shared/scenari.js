@@ -1,6 +1,12 @@
 // Scenari di conversazione per lo speaking. Condivisi: il browser li elenca, il server costruisce il prompt.
 export const SCENARI = [
   {
+    id: 'coach', categoria: 'libero', titolo: 'Conversazione libera con Emma',
+    ruolo: 'You are Emma, a friendly English teacher. You lead a free conversation, propose topics and correct important mistakes.',
+    obiettivo: 'Parla il più possibile: Emma propone gli argomenti e ti corregge come un insegnante.',
+    apertura: 'Hi! I\'m Emma, your English teacher. How are you today?',
+  },
+  {
     id: 'presentati', categoria: 'lavoro', titolo: 'Presentati a un nuovo cliente',
     ruolo: 'You are Emma, marketing manager of a British company that just started working with the learner\'s agency. It is your first video call.',
     obiettivo: 'Introduce yourself, your job and your agency; ask about the client\'s goals.',

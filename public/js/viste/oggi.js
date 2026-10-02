@@ -21,8 +21,24 @@ export async function mostra(box, { vai }) {
   const saluto = ora < 12 ? 'Buongiorno' : ora < 18 ? 'Buon pomeriggio' : 'Buonasera';
 
   const heroBox = h('div');
+  const cambia = (v) => { tipo = v; impostaDurata(v); disegnaHero(); };
+  const scelta = () => h('div', { style: { marginTop: '10px' } },
+    segmenti([['corta', 'Corta · 10\''], ['completa', 'Completa · 20\''], ['infinita', 'Infinito ∞']], tipo, cambia));
   const disegnaHero = () => {
-    const passi = pianoDelGiorno(g, tipo, { ai: d.ai, testFatto: d.testFatto });
+    if (tipo === 'infinita') {
+      svuota(heroBox, h('div', { class: 'hero' },
+        h('div', { class: 'titolo' }, 'Allenamento infinito'),
+        scelta(),
+        h('p', { class: 'small', style: { margin: '12px 0' } }, 'Un esercizio dopo l\'altro, finché non ti fermi tu. L\'app sceglie ogni volta il più utile:'),
+        h('ul', { class: 'passi' },
+          h('li', h('span', { class: 'pallino', style: { borderColor: COLORE_AREA.costanza } }), h('span', { class: 't grow' }, 'Ripasso delle carte', h('span', { class: 'muted small' }, ` · ${d.daRipassare} in scadenza`))),
+          h('li', h('span', { class: 'pallino', style: { borderColor: COLORE_AREA.inglese } }), h('span', { class: 't grow' }, 'Le tue lacune di inglese', h('span', { class: 'muted small' }, d.lacune ? ` · ${d.lacune} da superare` : ' · ancora nessuna'))),
+          h('li', h('span', { class: 'pallino', style: { borderColor: COLORE_AREA.memoria } }), h('span', { class: 't grow' }, 'Punti deboli di memoria e cultura')),
+          h('li', h('span', { class: 'pallino', style: { borderColor: COLORE_AREA.cultura } }), h('span', { class: 't grow' }, 'Il programma: pillole, writing, speaking e nuovi esercizi'))),
+        h('button', { class: 'btn primario pieno', onclick: () => vai('sessione/infinita') }, 'Inizia l\'allenamento')));
+      return;
+    }
+    const passi = pianoDelGiorno(g, tipo, { ai: d.ai, testFatto: d.testFatto, lacune: d.lacune });
     const locali = passiFatti(g);
     const fatti = passi.filter((p) => passoFatto(p, locali, d.fatteOggi));
     const tutto = fatti.length === passi.length;
@@ -31,9 +47,7 @@ export async function mostra(box, { vai }) {
       h('div', { class: 'row between' },
         h('div', { class: 'titolo' }, tutto ? 'Sessione completata' : 'La sessione di oggi'),
         h('span', { class: 'chip' }, `~${minutiTotali(passi)} min`)),
-      h('div', { style: { marginTop: '10px' } }, segmenti([['corta', 'Corta · 10\''], ['completa', 'Completa · 20\'']], tipo, (v) => {
-        tipo = v; impostaDurata(v); disegnaHero();
-      })),
+      scelta(),
       h('ul', { class: 'passi' }, passi.map((p) => {
         const f = fatti.includes(p);
         return h('li', { class: f ? 'fatto' : '' },
@@ -44,7 +58,8 @@ export async function mostra(box, { vai }) {
       tutto
         ? h('div', { class: 'stack' },
           h('p', { class: 'small' }, tipo === 'corta' ? 'Ottimo lavoro. Se hai altri 10 minuti, passa alla completa.' : 'Ottimo lavoro: ci vediamo domani.'),
-          tipo === 'corta' ? h('button', { class: 'btn pieno', onclick: () => { tipo = 'completa'; impostaDurata('completa'); disegnaHero(); } }, 'Passa alla completa') : null)
+          tipo === 'corta' ? h('button', { class: 'btn pieno', onclick: () => cambia('completa') }, 'Passa alla completa') : null,
+          h('button', { class: 'btn pieno', onclick: () => vai('sessione/infinita') }, 'Continua con l\'allenamento infinito ∞'))
         : h('button', { class: 'btn primario pieno', onclick: () => vai('sessione/' + tipo) }, iniziata ? 'Continua' : 'Inizia')));
   };
   disegnaHero();

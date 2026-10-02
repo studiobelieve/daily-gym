@@ -8,7 +8,7 @@ import {
   normalizza, confronta, confrontaFrase, parseTag, primo, tuttiTag, voci, campi, numero, aggiungiGiorni, giornoSettimana,
 } from '../public/js/shared/testo.js';
 import { avanzamento, suggerimenti, formatta } from '../public/js/shared/obiettivi.js';
-import { pianoDelGiorno } from '../public/js/shared/piano.js';
+import { pianoDelGiorno, prossimoEsercizio } from '../public/js/shared/piano.js';
 import { prossimoArgomento, CATEGORIE } from '../lib/cultura.js';
 
 const OGGI = '2026-10-01'; // giovedì
@@ -148,4 +148,38 @@ I am agree => I agree | "Agree" è già un verbo
   assert.deepEqual(campi(e[2]).slice(0, 2), ['the next Tuesday', 'next Tuesday']);
   const d = voci(parseTag('[FRASE] One two three || Uno due tre\nFour five six || Quattro'), 'FRASE', '||');
   assert.equal(d.length, 2);
+});
+
+test('Allenamento infinito: ripasso e lacune prima, poi punti deboli, senza ripetere di fila', () => {
+  let i = 0;
+  const seq = [0.01, 0.5, 0.99, 0.3, 0.7, 0.1, 0.9, 0.45];
+  const rng = () => seq[i++ % seq.length];
+  const stato = { ai: true, daRipassare: 30, lacune: 9, difficili: 3, medie: { nomi: { media: 30, ultimo: '2026-10-01' }, span: { media: 90, ultimo: '2026-10-02' } } };
+  assert.equal(prossimoEsercizio(stato, [], () => 0, '2026-10-02').id, 'ripasso');
+  assert.equal(prossimoEsercizio(stato, [], () => 0, '2026-10-02').limite, 15);
+  assert.equal(prossimoEsercizio(stato, ['ripasso'], () => 0.99, '2026-10-02').id, 'lacune', 'dopo il ripasso, le lacune');
+  const fatti = [];
+  for (let k = 0; k < 40; k++) fatti.push(prossimoEsercizio(stato, fatti, rng, '2026-10-02').id);
+  for (let k = 1; k < fatti.length; k++) assert.notEqual(fatti[k], fatti[k - 1], 'mai lo stesso esercizio due volte di fila');
+  // senza AI niente esercizi AI
+  const senza = Array.from({ length: 30 }, () => prossimoEsercizio({ ...stato, ai: false }, [], Math.random).id);
+  assert.ok(!senza.some((id) => ['cultura', 'writing', 'dettato', 'speaking', 'lacune'].includes(id)));
+  // punto debole (nomi 30%) esce più spesso di uno forte (span 90%)
+  const conta = { nomi: 0, span: 0 };
+  for (let k = 0; k < 3000; k++) { const id = prossimoEsercizio({ ai: true, daRipassare: 0, lacune: 0, difficili: 0, medie: stato.medie }, [], Math.random, '2026-10-02').id; if (id in conta) conta[id]++; }
+  assert.ok(conta.nomi > conta.span * 1.5, JSON.stringify(conta));
+});
+
+test('Sessione completa: le lacune entrano solo se ce ne sono abbastanza', () => {
+  const ids = (o) => pianoDelGiorno('2026-10-02', 'completa', o).map((p) => p.id);
+  assert.ok(ids({ lacune: 5 }).includes('lacune'));
+  assert.ok(!ids({ lacune: 1 }).includes('lacune'));
+  assert.ok(!pianoDelGiorno('2026-10-02', 'corta', { lacune: 9 }).some((p) => p.id === 'lacune'));
+});
+
+test('Errori con categoria', async () => {
+  const { campiErrore } = await import('../public/js/shared/testo.js');
+  const e = campiErrore('I am agree => I agree || "agree" è un verbo || ausiliari (do/be/have)');
+  assert.deepEqual([e.sbagliato, e.giusto, e.perche, e.categoria], ['I am agree', 'I agree', '"agree" è un verbo', 'ausiliari (do/be/have)']);
+  assert.equal(campiErrore('a => b || perché').categoria, 'altro');
 });

@@ -307,3 +307,14 @@ details.dati td, details.dati th { padding: 4px 6px; border-bottom: 1px solid va
 .opzione-fatta { padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); }
 .opzione-fatta.giusta { border-color: var(--good); background: color-mix(in srgb, var(--good) 15%, var(--surface)); }
 .opzione-fatta.sbagliata { border-color: var(--critical); background: color-mix(in srgb, var(--critical) 15%, var(--surface)); }
+
+/* ---------- agente vocale ---------- */
+.orb { width: 120px; height: 120px; border-radius: 50%; margin: 8px auto;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--accent) 60%, #fff), var(--accent) 55%, var(--memoria));
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 40%, transparent); transition: transform .3s; }
+.orb.connessione { opacity: .45; animation: gira-orb 2s linear infinite; }
+.orb.ascolta { animation: respira 2.4s ease-in-out infinite; }
+.orb.parla { animation: parla 0.9s ease-in-out infinite; }
+@keyframes respira { 50% { transform: scale(1.05); box-shadow: 0 0 0 14px color-mix(in srgb, var(--accent) 12%, transparent); } }
+@keyframes parla { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.12); } 60% { transform: scale(0.97); } }
+@keyframes gira-orb { to { filter: hue-rotate(360deg); } }

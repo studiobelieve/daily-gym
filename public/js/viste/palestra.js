@@ -10,7 +10,8 @@ const GRUPPI = [
   ['Inglese', 'inglese', [
     ['writing', 'Scrivi un breve testo, l\'AI lo corregge e spiega gli errori.'],
     ['dettato', 'Ascolta frasi e scrivile: orecchio e ortografia.'],
-    ['speaking', 'Conversazione a voce con l\'agente, poi il report.'],
+    ['speaking', 'Conversazione a voce con Emma, la tua insegnante: ti corregge e propone lei gli argomenti, senza fine.'],
+    ['lacune', 'Esercizi mirati sugli errori che fai più spesso.'],
     ['test', 'Rifai il test per ricalibrare il livello.'],
   ]],
   ['Memoria', 'memoria', [
@@ -23,6 +24,7 @@ const GRUPPI = [
   ]],
   ['Ripasso', 'costanza', [
     ['ripasso', 'Tutte le carte in scadenza.'],
+    ['difficili', 'Le carte che sbagli più spesso, anche se non sono in scadenza.'],
   ]],
 ];
 
@@ -31,6 +33,7 @@ export async function mostra(box, { vai }) {
   svuota(box,
     h('h1', 'Palestra'),
     h('p', { class: 'muted small' }, 'Allenati quando vuoi, oltre alla sessione del giorno.'),
+    h('button', { class: 'btn primario pieno', onclick: () => vai('sessione/infinita') }, '∞ Allenamento infinito: scelgo io l\'esercizio più utile'),
     GRUPPI.map(([nome, area, voci]) => h('div', { class: 'sezione' },
       h('h2', h('span', { class: 'chip ' + area }, nome)),
       h('div', { class: 'card' }, h('ul', { class: 'lista' }, voci.map(([id, desc]) => {

@@ -16,10 +16,24 @@ Si usa dal telefono e dal computer con gli stessi dati.
 
 La prima sessione parte con un **test di livello** (8 minuti).
 
+**Allenamento infinito ∞** (da Oggi o dalla Palestra): un esercizio dopo l'altro, finché non premi *Termina*. Ogni volta l'app sceglie il più utile:
+1. prima le carte in scadenza;
+2. poi le lacune di inglese;
+3. poi gli esercizi dove vai peggio, o che non fai da più tempo;
+4. infine il programma, cioè pillole, writing, dettato, speaking e memoria.
+
+Tutto è collegato: gli errori dello speaking diventano lacune, le lacune diventano esercizi, i passi fatti nell'infinito contano anche per la sessione del giorno.
+
 **Inglese**
 - *Writing*: una consegna breve al tuo livello. L'AI corregge, spiega gli errori in italiano e mostra come lo direbbe un madrelingua.
 - *Dettato*: frasi lette ad alta voce da scrivere, con la versione lenta.
-- *Speaking*: conversazione a voce con un agente AI su 9 scenari (cliente, riunione, small talk, viaggio, opinioni, la pillola del giorno…). Si tiene premuto il microfono per parlare. Alla fine arriva un report con voto, errori e frasi utili.
+- *Speaking con Emma*: un agente vocale vero (ElevenLabs Agents, in tempo reale), come una telefonata.
+  - Non ci sono pulsanti da tenere premuti: lei capisce da sola quando hai finito, e puoi interromperla.
+  - Fa l'insegnante: guida la conversazione, propone sempre nuovi argomenti, corregge subito gli errori importanti e ti fa ripetere.
+  - Non finisce mai da sola. Quando premi *Termina* ricevi il report, e gli errori finiscono nelle tue **lacune**.
+  - Ci sono anche giochi di ruolo (cliente, riunione, viaggio…).
+  - Se l'agente non si collega, resta la modalità "premi per parlare".
+- *Lacune*: ogni errore di writing e speaking viene salvato con il suo tipo (articoli, tempi verbali, preposizioni…). L'esercizio *Lavoro sulle lacune* crea frasi nuove proprio su quei tipi di errore. Ogni risposta giusta riduce la lacuna fino a superarla, e un errore ripetuto la fa ripartire.
 - *Livello adattivo*: sale di mezzo livello quando la media degli esercizi resta sopra 85 per almeno una settimana, e scende se resta sotto 55.
 
 **Memoria**

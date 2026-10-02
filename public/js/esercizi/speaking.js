@@ -15,6 +15,13 @@ function scenarioDelGiorno() {
 }
 
 export async function avvia(box, opz) {
+  // Con ElevenLabs configurato lo speaking è un agente vocale vero (conversazione continua).
+  // La modalità "premi per parlare" resta come riserva.
+  if (stato.voce && !opz.classico) {
+    const { avvia: avviaAgente } = await import('./agente.js');
+    const esito = await avviaAgente(box, opz);
+    if (esito !== 'classico') return esito;
+  }
   let id = opz.scenario;
   if (!id) id = await scegliScenario(box, scenarioDelGiorno());
   const sc = trovaScenario(id) || trovaScenario(scenarioDelGiorno());
@@ -176,6 +183,12 @@ async function conversazione(box, sc, opz) {
   fermaAudio();
   if (reg) reg.chiudi();
 
+  return mostraReport(box, sc, storia, { inizio, secondiParlati, opz });
+
+}
+
+// Report di fine conversazione (usato anche dall'agente vocale in tempo reale).
+export async function mostraReport(box, sc, storia, { inizio, secondiParlati = 0, opz = {} }) {
   svuota(box, caricamento('Preparo il report della conversazione…'));
   let k;
   for (;;) {
@@ -206,7 +219,7 @@ async function conversazione(box, sc, opz) {
         h('div', { class: 'grow' }, inglese(f.en, { tag: 'strong' }), ' — ', h('span', { class: 'muted' }, f.it)),
         h('button', { class: 'icona-btn', 'aria-label': 'Ascolta', onclick: (e) => { e.preventDefault(); parla(f.en); } }, icona('audio')))))) : null,
     k.consiglio ? h('div', { class: 'card small' }, '🎯 ', k.consiglio) : null,
-    h('p', { class: 'tiny muted center' }, 'Quello che è spuntato diventa carte di ripasso.'),
+    h('p', { class: 'tiny muted center' }, 'Quello che è spuntato diventa carte di ripasso. Gli errori entrano anche nelle tue lacune: l\'allenamento li riproporrà finché non li superi.'),
     h('button', { class: 'btn primario pieno', onclick: ok }, 'Salva e continua'))));
 
   const carte = [

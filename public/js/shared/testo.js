@@ -161,6 +161,24 @@ export function campi(valore) {
   return [a || '', b || '', coda.join(' | ')].map((s) => s.trim());
 }
 
+// Tipi di errore usati per raggruppare le lacune (stessa lista data all'AI, così i nomi restano coerenti).
+export const CATEGORIE_ERRORI = ['articoli', 'preposizioni', 'tempi verbali', 'verbi irregolari', 'ausiliari (do/be/have)',
+  'ordine delle parole', 'plurali', 'pronomi', 'verbi modali', 'condizionali', 'domande e negazioni',
+  'lessico e collocazioni', 'false friends', 'registro (formale/informale)', 'spelling'];
+
+// "sbagliato => giusto || perché || categoria" -> { sbagliato, giusto, perche, categoria }
+export function campiErrore(valore) {
+  const parti = String(valore).split(/\s*\|\|?\s*/);
+  const [a, b] = (parti[0] || '').split(/\s*(?:=>|->|→)\s*/);
+  let categoria = '';
+  if (parti.length >= 3) {
+    const c = parti[parti.length - 1].toLowerCase().replace(/[.\s]+$/, '').trim();
+    categoria = CATEGORIE_ERRORI.find((x) => c.includes(x.split(' (')[0])) || (c.length <= 30 ? c : '');
+  }
+  const perche = parti.slice(1, parti.length >= 3 ? -1 : undefined).join(' | ').trim();
+  return { sbagliato: (a || '').trim(), giusto: (b || '').trim(), perche, categoria: categoria || 'altro' };
+}
+
 export function numero(valore, min = 0, max = 100) {
   const m = String(valore || '').match(/-?\d+(?:[.,]\d+)?/);
   if (!m) return null;

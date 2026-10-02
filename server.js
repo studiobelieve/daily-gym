@@ -29,7 +29,7 @@ const SICUREZZA = {
   'X-Frame-Options': 'DENY',
   'Permissions-Policy': 'microphone=(self), camera=()',
   'Content-Security-Policy':
-    "default-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; script-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+    "default-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://api.elevenlabs.io wss://api.elevenlabs.io; script-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
 };
 
 // Rotte con parametri (/api/carte/:id) compilate una volta.

@@ -1,9 +1,9 @@
 // Esecuzione della sessione guidata (#/sessione/corta|completa) o di un singolo esercizio
 // (#/esercizio/<id>[/<parametro>]). Ogni esercizio è un modulo in js/esercizi/ con
 // avvia(box, opzioni) -> Promise<risultato | null>.
-import { h, svuota, icona, toast, conferma } from '../ui.js';
+import { h, svuota, icona, toast, conferma, durata } from '../ui.js';
 import { api, oggi } from '../api.js';
-import { pianoDelGiorno, ESERCIZI } from '../shared/piano.js';
+import { pianoDelGiorno, prossimoEsercizio, ESERCIZI } from '../shared/piano.js';
 import { passiFatti, segnaPasso, chiavePasso } from '../locale.js';
 import { passoFatto } from './oggi.js';
 import { fermaAudio } from '../voce.js';
@@ -19,14 +19,17 @@ const MODULI = {
   dettato: () => import('../esercizi/dettato.js'),
   speaking: () => import('../esercizi/speaking.js'),
   riepilogo: () => import('../esercizi/riepilogo.js'),
+  lacune: () => import('../esercizi/lacune.js'),
+  difficili: () => import('../esercizi/ripasso.js'),
 };
 
 export async function mostra(box, { nome, parametri, vai, attuale }) {
   if (nome === 'esercizio') return singolo(box, parametri, vai);
+  if (parametri[0] === 'infinita') return infinita(box, vai, attuale);
   const tipo = parametri[0] === 'completa' ? 'completa' : 'corta';
   const g = oggi();
   const d = await api.get('/api/oggi');
-  const passi = pianoDelGiorno(g, tipo, { ai: d.ai, testFatto: d.testFatto });
+  const passi = pianoDelGiorno(g, tipo, { ai: d.ai, testFatto: d.testFatto, lacune: d.lacune });
   const inizio = Date.now();
   const cambiLivello = [];
   const record = [];
@@ -78,7 +81,7 @@ async function singolo(box, [id, param], vai) {
 }
 
 // Mostra testata + esercizio. Restituisce il risultato, 'saltato' o 'esci'.
-async function eseguiPasso(box, p, { indice, passi, vai, singolo, attuale }) {
+async function eseguiPasso(box, p, { indice, passi, vai, singolo, attuale, infinito }) {
   const corpo = h('div');
   let uscita;
   // Quando la sessione abbandona l'esercizio (esci o salta), il modulo riceve un segnale
@@ -87,6 +90,10 @@ async function eseguiPasso(box, p, { indice, passi, vai, singolo, attuale }) {
   const promessaUscita = new Promise((r) => { uscita = (v) => { ctrl.abort(); fermaAudio(); r(v); }; });
   const attivo = () => attuale() && !ctrl.signal.aborted;
   const esci = async () => {
+    if (infinito) {
+      if (await conferma('Terminare l\'allenamento? Gli esercizi fatti restano salvati.')) uscita('termina');
+      return;
+    }
     if (await conferma('Vuoi uscire? I passi già completati restano salvati.')) {
       uscita('esci');
       vai(singolo ? 'palestra' : 'oggi');
@@ -98,13 +105,18 @@ async function eseguiPasso(box, p, { indice, passi, vai, singolo, attuale }) {
       h('button', { class: 'icona-btn', 'aria-label': 'Esci', onclick: esci }, icona('chiudi')),
       h('strong', { class: 'grow center' }, p.nome),
       singolo ? h('span', { style: { width: '38px' } }) : h('button', { class: 'btn piccolo fantasma', onclick: salta }, 'Salta')),
-    singolo ? null : h('div', { class: 'progresso-passi' }, passi.map((_, k) => h('i', { class: k < indice ? 'fatto' : k === indice ? 'ora' : '' }))),
+    infinito ? h('div', { class: 'row between tiny muted', style: { marginBottom: '12px' } },
+      h('span', `∞ Allenamento · esercizio ${indice + 1}`), infinito.tempo,
+      h('button', { class: 'btn piccolo', onclick: esci }, 'Termina'))
+      : singolo ? null : h('div', { class: 'progresso-passi' }, passi.map((_, k) => h('i', { class: k < indice ? 'fatto' : k === indice ? 'ora' : '' }))),
     corpo);
 
   for (;;) {
     try {
       const modulo = await MODULI[p.id]();
-      const risultato = await Promise.race([modulo.avvia(corpo, { ...p, attuale: attivo, segnale: ctrl.signal, singolo: Boolean(singolo) }), promessaUscita]);
+      const opzModulo = { ...p, attuale: attivo, segnale: ctrl.signal, singolo: Boolean(singolo) };
+      if (p.id === 'difficili') opzModulo.difficili = true;
+      const risultato = await Promise.race([modulo.avvia(corpo, opzModulo), promessaUscita]);
       return risultato;
     } catch (err) {
       if (err.status === 401) return 'esci';
@@ -117,8 +129,47 @@ async function eseguiPasso(box, p, { indice, passi, vai, singolo, attuale }) {
             singolo ? null : h('button', { class: 'btn', onclick: () => r('salta') }, 'Salta questo passo'))));
         promessaUscita.then(r);
       });
-      if (scelta === 'esci') return 'esci';
+      if (scelta === 'esci' || scelta === 'termina') return scelta;
       if (scelta === 'salta' || scelta === 'saltato') { ctrl.abort(); toast('Passo saltato'); return 'saltato'; }
     }
   }
+}
+
+// Allenamento infinito: un esercizio dopo l'altro finché non premi "Termina".
+// Ogni volta si rilegge lo stato (carte in scadenza, lacune, punteggi recenti) e si sceglie il passo più utile.
+async function infinita(box, vai, attuale) {
+  const inizio = Date.now();
+  const fatti = [];
+  const risultati = [];
+  const tempo = h('span');
+  const timer = setInterval(() => { tempo.textContent = durata((Date.now() - inizio) / 1000); }, 1000);
+  try {
+    for (;;) {
+      if (!attuale()) return;
+      const stato = await api.get('/api/allenamento/stato');
+      const p = prossimoEsercizio(stato, fatti, Math.random, oggi());
+      const esito = await eseguiPasso(box, p, { indice: fatti.length, passi: [], vai, attuale, infinito: { tempo } });
+      if (esito === 'esci' || !attuale()) return;
+      if (esito === 'termina') break;
+      fatti.push(p.id);
+      if (esito !== 'saltato') {
+        risultati.push({ nome: p.nome, punteggio: esito && esito.punteggio, livello: esito && esito.livello, record: esito && esito.record });
+        if (ESERCIZI[p.id] && p.id !== 'difficili') segnaPasso(oggi(), p.id);
+      }
+    }
+  } finally {
+    clearInterval(timer);
+  }
+  const secondi = Math.round((Date.now() - inizio) / 1000);
+  let serie = null;
+  if (risultati.length) serie = (await api.post('/api/sessione', { tipo: 'infinita', durata: secondi })).serie;
+  svuota(box, h('div', { class: 'card stack' },
+    h('div', { class: 'festa' }, h('div', { class: 'grande' }, risultati.length ? '💪' : '👋'),
+      h('h1', risultati.length ? `${risultati.length} esercizi in ${durata(secondi)}` : 'Allenamento chiuso')),
+    serie != null ? h('p', { class: 'center muted', style: { margin: 0 } }, `Serie: ${serie} ${serie === 1 ? 'giorno' : 'giorni'} di fila`) : null,
+    risultati.length ? h('ul', { class: 'lista small' }, risultati.map((r) => h('li', { class: 'row between' },
+      h('span', r.nome, r.record ? ' 🏆' : ''), h('span', { class: 'muted' }, r.punteggio != null ? r.punteggio + '%' : '✓')))) : null,
+    ...risultati.filter((r) => r.livello).map((r) => h('p', { class: 'chip inglese' }, `Livello inglese: ${r.livello.da} → ${r.livello.a}`)),
+    h('button', { class: 'btn primario pieno', onclick: () => vai('oggi') }, 'Torna a Oggi'),
+    h('button', { class: 'btn pieno', onclick: () => vai('sessione/infinita') }, 'Ricomincia')));
 }

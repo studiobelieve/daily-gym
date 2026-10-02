@@ -54,7 +54,16 @@ Le dipendenze npm sono solo `pg` e `@anthropic-ai/sdk`.
 10. **Livello delle pillole** = livello dell'utente + `cultura_offset` (impostazione, mezzi livelli da -3 a +3),
    spostato dal giudizio "troppo facile / giusto / troppo difficile". Le regole misurabili per livello
    (parole, lunghezza frasi, tempi, lessico) sono in `REGOLE_LETTURA` di lib/prompt.js.
-11. **Costi sotto controllo**: ogni chiamata viene registrata in `consumi`; c'è un limite di `LIMITE_AI_GIORNO` chiamate in 24 ore.
+11. **Agente vocale** (public/js/esercizi/agente.js + `POST /api/voce/agente` + lib/voce.js `agenteVocale`):
+   l'agente ElevenLabs si crea una volta (id in impostazioni `agente_vocale`, ricreato se cambia `VERSIONE_AGENTE`
+   o `ELEVENLABS_AGENT_LLM`); il prompt vero (livello, lacune, argomenti) arriva a ogni sessione come override.
+   La libreria è in public/vendor/elevenlabs (client.js = @elevenlabs/client 1.26.0 IIFE, worklet self-hosted:
+   così la CSP non deve permettere blob:). CSP: connect-src include api.elevenlabs.io (https e wss).
+   Se la linea cade, il client si ricollega da solo passando gli ultimi turni (max 3 tentativi).
+12. **Lacune** = tabella `errori` (categoria da `CATEGORIE_ERRORI`, `volte` sale con le ripetizioni e scende con
+   gli esercizi; a 0 risolto). Writing e report dello speaking le scrivono da soli. Allenamento infinito:
+   `prossimoEsercizio()` in shared/piano.js (puro, testato).
+13. **Costi sotto controllo**: ogni chiamata viene registrata in `consumi`; c'è un limite di `LIMITE_AI_GIORNO` chiamate in 24 ore.
    L'audio TTS è messo in cache nel browser per frase.
 
 ## Provare in locale
