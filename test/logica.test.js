@@ -213,3 +213,15 @@ test('percorsi dai libri: lezioni in ordine, chiavi uniche, aree in rotazione', 
   const i = ORDINE_CATEGORIE.indexOf('negoziazione');
   assert.deepEqual(prossimoArgomento([primo], i), { categoria: 'negoziazione', argomento: 'Never Split the Difference — Mirroring' });
 });
+
+test('writing: situazioni a rotazione senza ripetere quelle recenti', async () => {
+  const { scegliSituazione, SITUAZIONI } = await import('../lib/writing.js');
+  const recenti = [];
+  for (let i = 0; i < 20; i++) {
+    const s = scegliSituazione('lavoro', recenti);
+    assert.ok(!recenti.includes(s.indice), 'ripetuta ' + s.situazione);
+    assert.ok(s.formato);
+    recenti.unshift(s.indice);
+  }
+  assert.ok(SITUAZIONI.lavoro.length >= 30 && SITUAZIONI.cultura.length >= 30);
+});
