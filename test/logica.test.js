@@ -9,7 +9,7 @@ import {
 } from '../public/js/shared/testo.js';
 import { avanzamento, suggerimenti, formatta } from '../public/js/shared/obiettivi.js';
 import { pianoDelGiorno, prossimoEsercizio } from '../public/js/shared/piano.js';
-import { prossimoArgomento, CATEGORIE } from '../lib/cultura.js';
+import { prossimoArgomento, CATEGORIE, cercaArgomento } from '../lib/cultura.js';
 
 const OGGI = '2026-10-01'; // giovedì
 
@@ -182,4 +182,18 @@ test('Errori con categoria', async () => {
   const e = campiErrore('I am agree => I agree || "agree" è un verbo || ausiliari (do/be/have)');
   assert.deepEqual([e.sbagliato, e.giusto, e.perche, e.categoria], ['I am agree', 'I agree', '"agree" è un verbo', 'ausiliari (do/be/have)']);
   assert.equal(campiErrore('a => b || perché').categoria, 'altro');
+});
+
+test('Cultura: argomento libero, niente risultati a caso', async () => {
+  const finto = (risposte) => async (url) => {
+    const r = risposte.find(([chiave]) => url.includes(chiave));
+    return new Response(JSON.stringify(r ? r[1] : { query: { pages: [{ title: 'x', missing: true }] } }), { status: 200 });
+  };
+  // titolo esatto esistente su en.wikipedia
+  assert.equal(await cercaArgomento('Power posing', 'B1', finto([['en.wikipedia.org/w/api.php?format=json&formatversion=2&action=query&redirects=1&titles=Power', { query: { pages: [{ title: 'Power posing' }] } }]])), 'Power posing');
+  // nessun titolo esatto: la ricerca restituisce "Nuclear power" (non pertinente) e poi quello giusto
+  const r = await cercaArgomento('power posing', 'B1', finto([['list=search', { query: { search: [{ title: 'Nuclear power' }, { title: 'Power posing' }] } }]]));
+  assert.equal(r, 'Power posing');
+  assert.equal(await cercaArgomento('power posing', 'B1', finto([['list=search', { query: { search: [{ title: 'Nuclear power' }] } }]])), null);
+  assert.equal(await cercaArgomento('caffè', 'B1', finto([['list=search', { query: { search: [{ title: 'Caffè latte' }] } }]])), 'Caffè latte');
 });
