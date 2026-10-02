@@ -63,8 +63,10 @@ export async function avvia(box, opz) {
   const avanti = opz.minuti ? h('button', { class: 'btn pieno hidden' }, 'Prossimo esercizio →') : null;
   let microMuto = false;
 
-  const aggiungi = (ruolo, testo) => {
-    if (!testo || !testo.trim()) return;
+  const aggiungi = (ruolo, grezzo) => {
+    // La voce usa indicazioni di tono come [happy] o [excited]: servono all'audio, non vanno mostrate.
+    const testo = String(grezzo || '').replace(/\[[a-z][a-z ,'-]{1,30}\]\s*/gi, '').replace(/\s{2,}/g, ' ').trim();
+    if (!testo) return;
     const ultimo = storia[storia.length - 1];
     // L'agente a volte manda la risposta in più pezzi: si uniscono nella stessa bolla.
     if (ultimo && ultimo.ruolo === ruolo && ruolo === 'ai' && Date.now() - ultimo.t < 1500) {
