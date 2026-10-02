@@ -5,12 +5,39 @@ import { inglese, ingleseParagrafi, suggerimentoTocco } from '../parola.js';
 import { api } from '../api.js';
 import { parla, fermaAudio } from '../voce.js';
 
-const CATEGORIE = { storia: 'Storia', scienza: 'Scienza', geografia: 'Geografia', arte: 'Arte e cultura', economia: 'Economia e business', filosofia: 'Filosofia e mente', tecnologia: 'Tecnologia' };
+const CATEGORIE = { storia: 'Storia', scienza: 'Scienza', geografia: 'Geografia', arte: 'Arte e cultura', economia: 'Economia e business', filosofia: 'Filosofia e mente', tecnologia: 'Tecnologia', libero: 'A tua scelta' };
+const ICONE = { storia: '🏛', scienza: '🔬', geografia: '🌍', arte: '🎨', economia: '📈', filosofia: '🧠', tecnologia: '💡' };
 
 export async function avvia(box, opz) {
-  svuota(box, caricamento('Preparo la pillola di oggi (leggo la fonte e la adatto al tuo livello)…'));
-  const { pillola } = opz.pillolaId ? await api.get('/api/pillole/' + opz.pillolaId) : await api.post('/api/pillola', {});
+  // Nella sessione del giorno: la pillola di oggi. Dalla Palestra: sempre una nuova, quante ne vuoi.
+  let richiesta = {};
+  if (opz.singolo && !opz.pillolaId) {
+    richiesta = await scegliArgomento(box);
+    richiesta.nuova = true;
+  }
+  svuota(box, caricamento('Preparo la pillola (leggo la fonte e la adatto al tuo livello)…'));
+  const { pillola } = opz.pillolaId ? await api.get('/api/pillole/' + opz.pillolaId) : await api.post('/api/pillola', richiesta);
   return mostraPillola(box, pillola, opz);
+}
+
+function scegliArgomento(box) {
+  return new Promise((ok) => {
+    const input = h('input', { type: 'text', placeholder: 'es. Napoli, caffè, buchi neri, Beatles…', maxlength: 80 });
+    const vai = () => { const t = input.value.trim(); if (t) ok({ argomento: t }); };
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') vai(); });
+    svuota(box, h('div', { class: 'stack' },
+      h('div', { class: 'card stack' },
+        h('h2', { style: { margin: 0 } }, 'Nuova pillola'),
+        h('p', { class: 'small muted', style: { margin: 0 } }, 'Una pagina vera di Wikipedia, riscritta breve e al tuo livello. Puoi farne quante vuoi.'),
+        h('button', { class: 'btn primario pieno', onclick: () => ok({}) }, '🎲 A sorpresa')),
+      h('div', { class: 'card stack' },
+        h('h3', { style: { margin: 0 } }, 'Scegli un tema'),
+        h('div', { class: 'tile-griglia' }, Object.entries(ICONE).map(([k, ic]) =>
+          h('button', { class: 'btn', style: { justifyContent: 'flex-start' }, onclick: () => ok({ categoria: k }) }, ic + ' ' + CATEGORIE[k])))),
+      h('div', { class: 'card stack' },
+        h('h3', { style: { margin: 0 } }, 'Oppure scrivi tu l\'argomento'),
+        h('div', { class: 'row' }, h('div', { class: 'grow' }, input), h('button', { class: 'btn primario', onclick: vai }, 'Vai')))));
+  });
 }
 
 export async function mostraPillola(box, p, opz = {}) {

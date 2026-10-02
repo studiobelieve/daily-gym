@@ -73,7 +73,7 @@ async function singolo(box, [id, param], vai) {
     h('h2', `${p.nome}: fatto`),
     esito && esito.livello ? h('p', { class: 'chip inglese' }, `Livello inglese: ${esito.livello.da} → ${esito.livello.a}`) : null,
     esito && esito.record ? h('p', 'Nuovo record personale!') : null,
-    h('button', { class: 'btn primario pieno', onclick: () => vai('esercizio/' + id + (param ? '/' + param : '')) }, 'Ancora una volta'),
+    h('button', { class: 'btn primario pieno', onclick: () => vai('esercizio/' + id + (param ? '/' + param : '')) }, id === 'cultura' ? 'Un\'altra pillola' : 'Ancora una volta'),
     h('button', { class: 'btn pieno', onclick: () => vai('palestra') }, 'Torna alla palestra')));
 }
 
@@ -104,7 +104,7 @@ async function eseguiPasso(box, p, { indice, passi, vai, singolo, attuale }) {
   for (;;) {
     try {
       const modulo = await MODULI[p.id]();
-      const risultato = await Promise.race([modulo.avvia(corpo, { ...p, attuale: attivo, segnale: ctrl.signal }), promessaUscita]);
+      const risultato = await Promise.race([modulo.avvia(corpo, { ...p, attuale: attivo, segnale: ctrl.signal, singolo: Boolean(singolo) }), promessaUscita]);
       return risultato;
     } catch (err) {
       if (err.status === 401) return 'esci';

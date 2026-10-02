@@ -78,6 +78,14 @@ globalThis.fetch = async (input, init = {}) => {
     if (process.env.MOCK_RITARDO) await new Promise((r) => setTimeout(r, Number(process.env.MOCK_RITARDO)));
     return new Response(JSON.stringify(rispostaClaude(corpo)), { status: 200, headers: { 'content-type': 'application/json', 'request-id': 'req_test' } });
   }
+  if (url.includes('wikipedia.org') && url.includes('list=search')) {
+    const q = decodeURIComponent(url.split('srsearch=')[1] || '');
+    const titolo = /zzz/.test(q) ? null : q.charAt(0).toUpperCase() + q.slice(1);
+    return new Response(JSON.stringify({ query: { search: titolo ? [{ title: titolo }] : [] } }), { status: 200, headers: { 'content-type': 'application/json' } });
+  }
+  if (url.includes('wikipedia.org') && url.includes('prop=links')) {
+    return new Response(JSON.stringify({ query: { pages: [{ links: [{ title: 'Aqueduct' }, { title: 'Latin' }, { title: 'List of Roman emperors' }, { title: '1453' }] }] } }), { status: 200, headers: { 'content-type': 'application/json' } });
+  }
   if (url.includes('wikipedia.org')) {
     const titolo = decodeURIComponent(url.split('titles=')[1] || 'Roman Empire');
     return new Response(JSON.stringify({ query: { pages: [{ title: titolo, fullurl: 'https://simple.wikipedia.org/wiki/' + encodeURIComponent(titolo), extract: WIKI }] } }), { status: 200, headers: { 'content-type': 'application/json' } });

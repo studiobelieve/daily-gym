@@ -13,7 +13,7 @@ export const ESERCIZI = {
   nomi: { nome: 'Allenamento nomi', area: 'memoria', minuti: 4, ai: false },
   palazzo: { nome: 'Palazzo della memoria', area: 'memoria', minuti: 5, ai: false },
   span: { nome: 'Digit span', area: 'memoria', minuti: 2, ai: false },
-  cultura: { nome: 'Pillola di cultura', area: 'cultura', minuti: 5, ai: true },
+  cultura: { nome: 'Pillola di cultura', area: 'cultura', minuti: 4, ai: true },
   writing: { nome: 'Writing', area: 'inglese', minuti: 7, ai: true },
   dettato: { nome: 'Dettato', area: 'inglese', minuti: 4, ai: true },
   speaking: { nome: 'Speaking', area: 'inglese', minuti: 8, ai: true },

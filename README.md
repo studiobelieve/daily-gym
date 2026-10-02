@@ -30,7 +30,7 @@ La prima sessione parte con un **test di livello** (8 minuti).
 
 **Tocca una parola**: in ogni testo inglese dell'app (pillole, domande, consegne, correzioni, dettato, risposte dell'agente, carte) tocchi una parola e vedi la traduzione nel contesto e la forma base. Puoi allargare la selezione a un'espressione e salvarla nelle carte con la frase di esempio. Nel modulo **+** c'è anche il pulsante *Traduci* per le parole che incontri fuori dall'app.
 
-**Cultura**: ogni pillola parte da una pagina vera di Wikipedia (la fonte è citata). L'AI la riscrive in inglese al tuo livello, con regole precise per ogni livello: lunghezza delle frasi, tempi verbali, vocabolario. Poi fai un quiz di 3 domande. Alla fine dici se il testo era troppo facile, giusto o troppo difficile, e le pillole successive si spostano di mezzo livello. Le domande diventano carte di ripasso.
+**Cultura**: ogni pillola parte da una pagina vera di Wikipedia (la fonte è citata). L'AI la riscrive in inglese al tuo livello, con regole precise per ogni livello: lunghezza delle frasi, tempi verbali, vocabolario. Poi fai un quiz di 3 domande. Dalla Palestra le pillole sono illimitate: a sorpresa, per tema o su un argomento che scrivi tu. Quando gli argomenti della lista finiscono, l'app continua con pagine Wikipedia collegate a quelle già lette. Alla fine dici se il testo era troppo facile, giusto o troppo difficile, e le pillole successive si spostano di mezzo livello. Le domande diventano carte di ripasso.
 
 **Tracking**
 - Calendario della costanza.

@@ -19,7 +19,7 @@ const GRUPPI = [
     ['span', 'Il termometro della memoria di lavoro.'],
   ]],
   ['Cultura', 'cultura', [
-    ['cultura', 'Una nuova pillola da una fonte vera, in inglese al tuo livello.'],
+    ['cultura', 'Pillole illimitate: a sorpresa, per tema o su un argomento che scegli tu.'],
   ]],
   ['Ripasso', 'costanza', [
     ['ripasso', 'Tutte le carte in scadenza.'],
