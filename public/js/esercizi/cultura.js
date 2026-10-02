@@ -1,6 +1,7 @@
 // Pillola di cultura: leggi (o ascolta) un testo breve in inglese, poi 3 domande.
 // Le domande diventano carte di ripasso, così il fatto resta anche tra un mese.
-import { h, svuota, paragrafi, mescola, toast, icona, caricamento } from '../ui.js';
+import { h, svuota, mescola, toast, icona, caricamento } from '../ui.js';
+import { inglese, ingleseParagrafi, suggerimentoTocco } from '../parola.js';
 import { api } from '../api.js';
 import { parla, fermaAudio } from '../voce.js';
 
@@ -31,9 +32,10 @@ export async function mostraPillola(box, p, opz = {}) {
 
   await new Promise((ok) => svuota(box, h('article', { class: 'card stack' },
     h('div', { class: 'row between' }, h('span', { class: 'chip cultura' }, CATEGORIE[p.categoria] || p.categoria), h('span', { class: 'chip' }, p.livello)),
-    h('h1', p.titolo),
-    btnAscolta,
-    h('div', { class: 'testo-pillola' }, paragrafi(p.testo)),
+    inglese(p.titolo, { tag: 'h1' }),
+    h('div', { class: 'row between' }, btnAscolta, h('span', { class: 'tiny muted' }, 'Testo al livello ' + p.livello)),
+    suggerimentoTocco(),
+    h('div', { class: 'testo-pillola' }, ingleseParagrafi(p.testo)),
     glossario.length ? h('div', { class: 'stack' },
       h('h3', 'Parole utili'),
       h('ul', { class: 'lista small' }, glossario.map((g) => {
@@ -54,14 +56,18 @@ export async function mostraPillola(box, p, opz = {}) {
     const ok = await new Promise((fatto) => {
       const opzioni = mescola([d.risposta, ...d.sbagliate]);
       const bottoni = opzioni.map((o) => h('button', { onclick: () => scegli(o) }, o));
+      const area = h('div', { class: 'opzioni' }, bottoni);
+      // Dopo la risposta le opzioni diventano testo: ogni parola si può toccare e salvare.
       const scegli = (o) => {
-        bottoni.forEach((b) => { b.disabled = true; if (b.textContent === d.risposta) b.classList.add('giusta'); else if (b.textContent === o) b.classList.add('sbagliata'); });
-        setTimeout(() => fatto(o === d.risposta), o === d.risposta ? 600 : 1400);
+        svuota(area, opzioni.map((x) => h('div', { class: 'opzione-fatta ' + (x === d.risposta ? 'giusta' : x === o ? 'sbagliata' : '') },
+          x === d.risposta ? '✓ ' : x === o ? '✗ ' : '', inglese(x))),
+        suggerimentoTocco(),
+        h('button', { class: 'btn primario pieno', onclick: () => fatto(o === d.risposta) }, i < p.domande.length - 1 ? 'Prossima domanda' : 'Fine quiz'));
       };
       svuota(box, h('div', { class: 'card stack' },
         h('div', { class: 'tiny muted' }, `Domanda ${i + 1} di ${p.domande.length}`),
-        h('h2', { style: { fontWeight: 600 } }, d.domanda),
-        h('div', { class: 'opzioni' }, bottoni)));
+        inglese(d.domanda, { tag: 'h2', stile: { fontWeight: 600 } }),
+        area));
     });
     if (ok) giuste++;
   }
@@ -71,6 +77,22 @@ export async function mostraPillola(box, p, opz = {}) {
     h('div', { class: 'voto-grande' }, `${giuste}/${p.domande.length}`),
     daRicordare ? h('div', { class: 'card', style: { textAlign: 'left' } }, h('div', { class: 'tiny muted' }, 'Da ricordare'), h('p', { style: { margin: 0 } }, daRicordare)) : null,
     h('p', { class: 'small muted' }, p.completata ? 'Quiz ripetuto.' : 'Le domande sono diventate carte di ripasso: le ritroverai nei prossimi giorni.'),
+    giudizio(p),
     h('button', { class: 'btn primario pieno', onclick: ok }, 'Avanti'))));
   return { punteggio, livello: r.livello };
+}
+
+// "Com'era il testo?": sposta di mezzo livello le prossime pillole.
+function giudizio(p) {
+  const esito = h('p', { class: 'tiny muted', style: { margin: 0 } });
+  const scelte = [[-1, 'Troppo facile'], [0, 'Giusto'], [1, 'Troppo difficile']];
+  const bottoni = scelte.map(([v, nome]) => h('button', { class: 'btn piccolo' + (p.difficolta === v ? ' primario' : ''), onclick: async () => {
+    const r = await api.post(`/api/pillole/${p.id}/difficolta`, { valore: v });
+    p.difficolta = v;
+    bottoni.forEach((b, i) => b.classList.toggle('primario', scelte[i][0] === v));
+    esito.textContent = v === 0 ? `Perfetto: le prossime pillole restano al livello ${r.prossimoLivello}.` : `Ok: le prossime pillole saranno al livello ${r.prossimoLivello}.`;
+  } }, nome));
+  return h('div', { class: 'card stack', style: { textAlign: 'left' } },
+    h('div', { class: 'small' }, h('strong', 'Com\'era il testo per te?')),
+    h('div', { class: 'row' }, bottoni), esito);
 }

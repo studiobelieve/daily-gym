@@ -298,3 +298,12 @@ details.dati td, details.dati th { padding: 4px 6px; border-bottom: 1px solid va
 .festa .grande { font-size: 3rem; }
 
 .login { max-width: 380px; margin: 12vh auto 0; }
+
+/* ---------- tocca una parola ---------- */
+.pt { cursor: pointer; border-radius: 4px; transition: background .15s; -webkit-tap-highlight-color: transparent; }
+@media (hover: hover) { .pt:hover { background: color-mix(in srgb, var(--accent) 18%, transparent); } }
+.pt.sel { background: color-mix(in srgb, var(--accent) 32%, transparent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 32%, transparent); }
+.bolla.io .pt.sel, .bolla.io .pt:hover { background: rgba(255,255,255,.25); }
+.opzione-fatta { padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); }
+.opzione-fatta.giusta { border-color: var(--good); background: color-mix(in srgb, var(--good) 15%, var(--surface)); }
+.opzione-fatta.sbagliata { border-color: var(--critical); background: color-mix(in srgb, var(--critical) 15%, var(--surface)); }

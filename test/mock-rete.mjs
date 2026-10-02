@@ -38,6 +38,12 @@ The Romans built roads, bridges and aqueducts. Many of them still exist today, a
 [DOMANDA] When did the Roman Empire start? || 27 BC || 476 AD || 100 BC
 [DOMANDA] What did the Romans build? || Roads and aqueducts || Pyramids || Castles
 [DA_RICORDARE] L'Impero romano iniziò nel 27 a.C. con Augusto, il primo imperatore.`],
+  ['concise English-Italian dictionary', (corpo) => {
+    const t = (corpo.messages[0].content.match(/<testo_utente>([^<]*)</) || [])[1] || '';
+    const diz = { built: ['costruirono', 'to build'], roads: ['strade', 'road'], 'built roads': ['costruirono strade', ''], empire: ['impero', ''] };
+    const [it, base] = diz[t.toLowerCase()] || ['(traduzione di ' + t + ')', ''];
+    return `[TRADUZIONE] ${it}\n[BASE] ${base}\n[NOTA] ${t.toLowerCase() === 'built' ? 'Passato irregolare di "build".' : ''}`;
+  }],
   ['conversation partner', (corpo) => {
     const n = corpo.messages.length;
     return ['That sounds great! And what do you do exactly at the agency?', 'Interesting. What is the most difficult part of your job?', 'I see. How do you usually solve that problem?'][n % 3];

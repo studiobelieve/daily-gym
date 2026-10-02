@@ -38,9 +38,22 @@ function modulo(tipo, carta, chiudi) {
     const fronte = inp(c.fronte, 'es. to look forward to', { autocapitalize: 'off' });
     const retro = inp(c.retro, 'es. non vedere l\'ora di');
     const nota = ta(c.nota, 'es. I\'m looking forward to meeting you.', 2);
+    const traduci = h('button', { class: 'btn piccolo', type: 'button', onclick: async () => {
+      if (!fronte.value.trim()) return;
+      traduci.disabled = true;
+      traduci.textContent = 'Traduco…';
+      try {
+        const r = await api.post('/api/traduci', { testo: fronte.value.trim(), frase: nota.value.trim() });
+        retro.value = r.traduzione;
+        msg.textContent = r.esistente ? `Hai già una carta per "${r.esistente.fronte}".` : '';
+        if (r.base && r.base.toLowerCase() !== fronte.value.trim().toLowerCase()) msg.textContent += ` Forma base: ${r.base}.`;
+      } catch (err) { msg.textContent = err.message; }
+      traduci.disabled = false;
+      traduci.textContent = 'Traduci';
+    } }, 'Traduci');
     campi = [
       campo('Parola o espressione in inglese', h('div', { class: 'row' }, h('div', { class: 'grow' }, fronte), h('button', { class: 'icona-btn', type: 'button', 'aria-label': 'Ascolta', onclick: () => fronte.value && parla(fronte.value) }, icona('audio')))),
-      campo('Significato in italiano', retro),
+      campo('Significato in italiano', h('div', { class: 'row' }, h('div', { class: 'grow' }, retro), traduci)),
       campo('Frase di esempio (facoltativa)', nota, 'Meglio la frase in cui l\'hai trovata: le parole nel contesto si ricordano molto di più.'),
     ];
     leggi = () => ({ fronte: fronte.value, retro: retro.value, nota: nota.value });

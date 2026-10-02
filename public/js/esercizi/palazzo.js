@@ -4,6 +4,9 @@ import { h, svuota, mescola, campo } from '../ui.js';
 import { api } from '../api.js';
 import { OGGETTI, PERCORSO_ESEMPIO } from '../dati/oggetti.js';
 import { confronta } from '../shared/testo.js';
+import { inglese as ingleseTesto } from '../parola.js';
+
+const inglese_ = (t) => ingleseTesto(t, { tag: 'div', classe: 'oggetto' });
 
 function leggiN() { try { return Number(localStorage.getItem('dg_palazzo_n')) || 5; } catch { return 5; } }
 function scriviN(n) { try { localStorage.setItem('dg_palazzo_n', String(n)); } catch {} }
@@ -43,7 +46,7 @@ export async function avvia(box, opz) {
     await new Promise((ok) => svuota(box, h('div', { class: 'card stack center' },
       h('div', { class: 'tiny muted' }, `${i + 1} di ${n}`),
       h('div', { class: 'luogo' }, luoghi[i]),
-      h('div', { class: 'oggetto' }, oggetti[i].mostra),
+      inglese ? inglese_(oggetti[i].mostra) : h('div', { class: 'oggetto' }, oggetti[i].mostra),
       inglese ? h('div', { class: 'small muted' }, `(${oggetti[i].it})`) : null,
       h('p', { class: 'small muted' }, 'Chiudi gli occhi 3 secondi e "vedi" la scena.'),
       h('button', { class: 'btn primario pieno', onclick: ok }, i < n - 1 ? 'Prossimo luogo' : 'Fatto, verifichiamo'))));

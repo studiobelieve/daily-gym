@@ -6,6 +6,7 @@ import { api } from '../api.js';
 import { parla } from '../voce.js';
 import { confronta } from '../shared/testo.js';
 import { avatar } from '../avatar.js';
+import { inglese } from '../parola.js';
 
 const VOTI = [
   [0, 'Di nuovo', 'non ricordavo', 'v0'],
@@ -63,19 +64,23 @@ function mostraCarta(area, c, segnale) {
     let fronte, risposta;
     if (verso === 'en-it') {
       fronte = [h('div', { class: 'row', style: { justifyContent: 'center' } }, h('span', { class: 'fronte' }, c.fronte), audioBtn(c.fronte)), h('div', { class: 'sotto' }, 'Cosa significa?')];
-      risposta = [h('div', { class: 'principale' }, c.retro || '—'), c.nota ? h('div', { class: 'muted', style: { marginTop: '6px' } }, c.nota) : null];
+      risposta = [h('div', { class: 'principale' }, c.retro || '—'), c.nota ? inglese(c.nota, { tag: 'div', classe: 'muted', stile: { marginTop: '6px' } }) : null];
     } else if (verso === 'it-en') {
       fronte = [h('div', { class: 'fronte' }, c.retro || c.fronte), h('div', { class: 'sotto' }, 'Come si dice in inglese?')];
       risposta = [h('div', { class: 'row', style: { justifyContent: 'center' } }, h('span', { class: 'principale' }, c.fronte), audioBtn(c.fronte)),
-        c.nota ? h('div', { class: 'muted', style: { marginTop: '6px' } }, c.nota) : null];
+        c.nota ? inglese(c.nota, { tag: 'div', classe: 'muted', stile: { marginTop: '6px' } }) : null];
     } else if (verso === 'persona') {
       const ex = c.extra || {};
       fronte = [ex.avatar ? avatar(ex.avatar) : null, h('div', { class: 'fronte', style: { fontSize: '1.2rem' } }, c.retro || 'Chi è?'),
         ex.dettaglio ? h('div', { class: 'sotto' }, ex.dettaglio) : null, h('div', { class: 'sotto' }, 'Come si chiama?')];
       risposta = [h('div', { class: 'principale' }, c.fronte), c.nota ? h('div', { class: 'muted', style: { marginTop: '6px' } }, '🧠 ' + c.nota) : null];
     } else {
-      fronte = [h('div', { class: 'fronte', style: { fontSize: '1.25rem' } }, c.fronte), c.tipo === 'cultura' && c.nota ? h('div', { class: 'sotto tiny' }, c.nota) : null];
-      risposta = [h('div', { class: 'principale' }, c.retro), c.tipo === 'ricorda' && c.nota ? h('div', { class: 'muted small', style: { marginTop: '6px' } }, c.nota) : null];
+      // Domande di cultura e correzioni di writing/speaking sono in inglese: parole toccabili.
+      const enRisposta = c.tipo === 'cultura' || (c.extra && ['writing', 'speaking'].includes(c.extra.origine));
+      fronte = [c.tipo === 'cultura' ? inglese(c.fronte, { tag: 'div', classe: 'fronte', stile: { fontSize: '1.25rem' } }) : h('div', { class: 'fronte', style: { fontSize: '1.25rem' } }, c.fronte),
+        c.tipo === 'cultura' && c.nota ? h('div', { class: 'sotto tiny' }, c.nota) : null];
+      risposta = [enRisposta ? inglese(c.retro, { tag: 'div', classe: 'principale' }) : h('div', { class: 'principale' }, c.retro),
+        c.tipo === 'ricorda' && c.nota ? h('div', { class: 'muted small', style: { marginTop: '6px' } }, c.nota) : null];
     }
     svuota(retro, risposta);
 

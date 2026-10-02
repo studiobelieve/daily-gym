@@ -2,6 +2,7 @@
 import { h, svuota, toast, icona, caricamento } from './ui.js';
 import { api, quandoNonAutenticato } from './api.js';
 import { apriAggiungi } from './viste/carte.js';
+import './parola.js'; // attiva "tocca una parola" in tutta l'app
 
 const app = document.getElementById('app');
 

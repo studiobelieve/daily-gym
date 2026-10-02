@@ -2,6 +2,7 @@
 import { h, svuota, icona, caricamento, toast } from '../ui.js';
 import { api } from '../api.js';
 import { parla } from '../voce.js';
+import { inglese, suggerimentoTocco } from '../parola.js';
 import { confrontaFrase } from '../shared/testo.js';
 
 export async function avvia(box, opz) {
@@ -44,7 +45,9 @@ export async function avvia(box, opz) {
       svuota(box, h('div', { class: 'card stack' },
         h('div', { class: 'row between' }, h('strong', r.punteggio + '%'), h('button', { class: 'icona-btn', 'aria-label': 'Riascolta', onclick: () => parla(f.en) }, icona('audio'))),
         h('div', { style: { fontSize: '1.1rem', lineHeight: 1.9 } }, r.dettaglio.map((d) => h('span', { class: 'parola-dettato ' + d.esito, title: d.scritta ? 'hai scritto: ' + d.scritta : '' }, d.parola))),
+        inglese(f.en, { tag: 'p', stile: { margin: 0, fontWeight: 600 } }),
         h('p', { class: 'small muted', style: { margin: 0 } }, f.it),
+        suggerimentoTocco(),
         r.extra ? h('p', { class: 'tiny muted' }, `${r.extra} parole in più`) : null,
         h('div', { class: 'row' }, carta),
         h('button', { class: 'btn primario pieno', onclick: ok }, i < frasi.length - 1 ? 'Prossima frase' : 'Fine')));

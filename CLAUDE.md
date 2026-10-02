@@ -47,7 +47,14 @@ Le dipendenze npm sono solo `pg` e `@anthropic-ai/sdk`.
 8. **Modello AI**: predefinito `claude-opus-5-5` con `output_config.effort` e `fallbacks: 'default'`
    (beta `server-side-fallback-2026-07-01`). Haiku 4.5 non accetta né effort né fallbacks: in ai.js c'è un ramo apposta.
    Controllare sempre `stop_reason === 'refusal'`.
-9. **Costi sotto controllo**: ogni chiamata viene registrata in `consumi`; c'è un limite di `LIMITE_AI_GIORNO` chiamate in 24 ore.
+9. **Ogni testo inglese passa da `inglese()` / `ingleseParagrafi()`** (public/js/parola.js): rende ogni parola
+   toccabile → traduzione nel contesto (`POST /api/traduci`), forma base, salvataggio come carta.
+   Testi nuovi in inglese (domande, consegne, risposte AI) vanno resi così, non con `h()` semplice.
+   Dentro un `<button>` il tocco serve a rispondere: le opzioni dei quiz diventano testo dopo la risposta.
+10. **Livello delle pillole** = livello dell'utente + `cultura_offset` (impostazione, mezzi livelli da -3 a +3),
+   spostato dal giudizio "troppo facile / giusto / troppo difficile". Le regole misurabili per livello
+   (parole, lunghezza frasi, tempi, lessico) sono in `REGOLE_LETTURA` di lib/prompt.js.
+11. **Costi sotto controllo**: ogni chiamata viene registrata in `consumi`; c'è un limite di `LIMITE_AI_GIORNO` chiamate in 24 ore.
    L'audio TTS è messo in cache nel browser per frase.
 
 ## Provare in locale

@@ -6,6 +6,7 @@ import { stato } from '../app.js';
 import { parla, fermaAudio, registratore, trascriviAudio, ascoltaBrowser, puoRegistrare, riconoscimentoBrowser } from '../voce.js';
 import { SCENARI, scenario as trovaScenario } from '../shared/scenari.js';
 import { giornoSettimana } from '../shared/testo.js';
+import { inglese, suggerimentoTocco } from '../parola.js';
 
 function scenarioDelGiorno() {
   const giorno = Math.floor(Date.parse(oggi()) / 86400000);
@@ -51,7 +52,7 @@ async function conversazione(box, sc, opz) {
   const timer = setInterval(() => { tempo.textContent = durata((Date.now() - inizio) / 1000); }, 1000);
 
   const bolla = (ruolo, testo) => {
-    const b = h('div', { class: 'bolla ' + ruolo }, testo,
+    const b = h('div', { class: 'bolla ' + ruolo }, inglese(testo),
       ruolo === 'ai' ? h('div', { class: 'azioni' }, h('button', { onclick: () => parla(testo) }, '🔊 riascolta'), ' ',
         h('button', { onclick: () => parla(testo, { lento: true }) }, '🐢 lento')) : null);
     chat.appendChild(b);
@@ -164,6 +165,7 @@ async function conversazione(box, sc, opz) {
         usaServer ? 'Voce: ElevenLabs.' : usaBrowser ? 'Voce: riconoscimento del browser (funziona meglio su Chrome).' : 'Il microfono non è supportato qui: puoi scrivere.',
         ' Obiettivo: 6-8 minuti.')),
     chat,
+    suggerimentoTocco(),
     h('div', { class: 'center' }, (usaServer || usaBrowser) ? mic : null, info),
     testoIn,
     fine));
@@ -196,12 +198,12 @@ async function conversazione(box, sc, opz) {
       k.errori.map((e, i) => h('div', { class: 'errore-riga' }, h('label', { class: 'row', style: { alignItems: 'flex-start' } },
         h('input', { type: 'checkbox', checked: true, onchange: (ev) => { selErr[i] = ev.target.checked; }, style: { marginTop: '5px' } }),
         h('div', { class: 'grow' },
-          h('div', h('span', { class: 'barrato' }, e.detto), ' → ', h('span', { class: 'giusto' }, e.meglio)),
+          h('div', h('span', { class: 'barrato' }, e.detto), ' → ', inglese(e.meglio, { classe: 'giusto' })),
           e.perche ? h('div', { class: 'small muted' }, e.perche) : null))))) : null,
     k.frasi.length ? h('div', { class: 'card' }, h('h3', 'Frasi utili'),
       k.frasi.map((f, i) => h('div', { class: 'errore-riga' }, h('label', { class: 'row' },
         h('input', { type: 'checkbox', checked: true, onchange: (ev) => { selFrasi[i] = ev.target.checked; } }),
-        h('div', { class: 'grow' }, h('strong', f.en), ' — ', h('span', { class: 'muted' }, f.it)),
+        h('div', { class: 'grow' }, inglese(f.en, { tag: 'strong' }), ' — ', h('span', { class: 'muted' }, f.it)),
         h('button', { class: 'icona-btn', 'aria-label': 'Ascolta', onclick: (e) => { e.preventDefault(); parla(f.en); } }, icona('audio')))))) : null,
     k.consiglio ? h('div', { class: 'card small' }, '🎯 ', k.consiglio) : null,
     h('p', { class: 'tiny muted center' }, 'Quello che è spuntato diventa carte di ripasso.'),
