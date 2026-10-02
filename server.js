@@ -144,12 +144,43 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
+// Se il database manca o non risponde, l'app NON va in crash: mostra una pagina che spiega
+// cosa sistemare su Railway e riprova da sola a collegarsi ogni 10 secondi.
+function paginaConfigurazione(motivo) {
+  const html = `<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Gym · configurazione</title><style>body{font:16px/1.6 system-ui,sans-serif;background:#111110;color:#fff;margin:0;padding:24px}
+main{max-width:560px;margin:8vh auto}code{background:#242422;padding:2px 6px;border-radius:6px}.m{color:#c3c2b7}</style></head>
+<body><main><h1>Daily Gym è quasi pronta</h1><p><strong>${motivo}</strong></p>
+<p>Su Railway, nello stesso progetto:</p><ol>
+<li><strong>+ Create</strong> → <strong>Database</strong> → <strong>PostgreSQL</strong>.</li>
+<li>Servizio <strong>daily-gym</strong> → <strong>Variables</strong> → nuova variabile <code>DATABASE_URL</code> con valore <code>\${{Postgres.DATABASE_URL}}</code>.</li>
+</ol><p class="m">Railway riavvia l'app da solo. Questa pagina si aggiorna ogni 15 secondi.</p></main>
+<script>setTimeout(()=>location.reload(),15000)</script></body></html>`;
+  return http.createServer((req, res) => {
+    if (req.url === '/salute') { res.writeHead(200); return res.end('in attesa del database'); }
+    res.writeHead(503, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'Retry-After': '15' });
+    res.end(html);
+  });
+}
+
 async function avvia() {
   if (!process.env.DATABASE_URL) {
     console.error('Manca DATABASE_URL: aggiungi un database PostgreSQL al progetto su Railway.');
-    process.exit(1);
+    paginaConfigurazione('Manca il database (variabile DATABASE_URL).').listen(PORTA, () => console.log(`Pagina di configurazione sulla porta ${PORTA}`));
+    return;
   }
-  await migra();
+  let attesa = null;
+  for (;;) {
+    try {
+      await migra();
+      break;
+    } catch (err) {
+      console.error('Database non raggiungibile, riprovo tra 10 secondi:', err.message);
+      if (!attesa) attesa = paginaConfigurazione('Il database non risponde ancora: ' + String(err.message).replace(/[<>&]/g, '')).listen(PORTA);
+      await new Promise((r) => setTimeout(r, 10000));
+    }
+  }
+  if (attesa) await new Promise((r) => attesa.close(r));
   server.listen(PORTA, () => console.log(`Daily Gym attivo sulla porta ${PORTA}`));
 }
 
