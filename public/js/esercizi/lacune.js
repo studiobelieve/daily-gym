@@ -21,7 +21,7 @@ export async function avvia(box, opz) {
   const inizio = Date.now();
   await new Promise((ok) => svuota(box, h('div', { class: 'card stack' },
     h('h2', { style: { margin: 0 } }, 'Lavoriamo sulle tue lacune'),
-    h('p', { class: 'small', style: { margin: 0 } }, 'Oggi: ', h('strong', dati.categorie.join(', ')), '. Sono gli errori che fai più spesso nel writing e nello speaking.'),
+    h('p', { class: 'small', style: { margin: 0 } }, 'Esercizi sugli errori che fai più spesso nel writing e nello speaking. Non ti dico la regola: trovarla fa parte dell\'esercizio.'),
     h('p', { class: 'tiny muted', style: { margin: 0 } }, 'Ogni risposta giusta riduce la lacuna; quando arriva a zero è superata. Un errore che rifai la fa ripartire.'),
     h('button', { class: 'btn primario pieno', onclick: ok }, 'Inizia'))));
 
@@ -32,7 +32,7 @@ export async function avvia(box, opz) {
     const input = h('input', { type: 'text', autocomplete: 'off', autocapitalize: 'off', spellcheck: false, placeholder: 'La tua risposta in inglese' });
     const risposta = await new Promise((ok) => {
       svuota(box, h('div', { class: 'card stack' },
-        h('div', { class: 'row between' }, h('span', { class: 'chip inglese' }, it.categoria), h('span', { class: 'tiny muted' }, `${i + 1} di ${dati.items.length}`)),
+        h('div', { class: 'tiny muted' }, `${i + 1} di ${dati.items.length}`),
         h('p', { class: 'small muted', style: { margin: 0 } }, it.istruzione),
         it.tipo === 'traduci' ? h('h2', { style: { fontWeight: 600, margin: 0 } }, it.testo) : inglese(it.testo, { tag: 'h2', stile: { fontWeight: 600, margin: 0 } }),
         input,
@@ -45,7 +45,7 @@ export async function avvia(box, opz) {
     const giusto = esito !== 'sbagliata';
     esiti.push({ categoria: it.categoria, giusto });
     await new Promise((ok) => svuota(box, h('div', { class: 'card stack' },
-      h('div', { style: { fontSize: '1.8rem' } }, giusto ? (esito === 'quasi' ? '≈ Quasi, va bene' : '✓ Giusto') : '✗'),
+      h('div', { class: 'row between' }, h('div', { style: { fontSize: '1.8rem' } }, giusto ? (esito === 'quasi' ? '≈ Quasi, va bene' : '✓ Giusto') : '✗'), h('span', { class: 'chip inglese' }, it.categoria)),
       h('div', h('span', { class: 'muted small' }, 'Risposta: '), inglese(it.risposte[0], { tag: 'strong', classe: 'giusto' })),
       risposta.trim() && !giusto ? h('div', { class: 'small' }, 'Hai scritto: ', h('span', { class: 'barrato' }, risposta)) : null,
       it.spiegazione ? h('p', { class: 'small', style: { margin: 0 } }, it.spiegazione) : null,

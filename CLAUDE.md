@@ -63,7 +63,10 @@ Le dipendenze npm sono solo `pg` e `@anthropic-ai/sdk`.
    Se la linea cade, il client si ricollega da solo passando gli ultimi turni (max 3 tentativi).
 12. **Lacune** = tabella `errori` (categoria da `CATEGORIE_ERRORI`, `volte` sale con le ripetizioni e scende con
    gli esercizi; a 0 risolto). Writing e report dello speaking le scrivono da soli. Allenamento infinito:
-   `prossimoEsercizio()` in shared/piano.js (puro, testato).
+   `prossimoEsercizio()` in shared/piano.js (puro, testato): posizioni dispari = cultura/richiamo, le altre
+   a rotazione equa su `ROTAZIONE` (meno fatti prima, area diversa dalla precedente). Nelle lacune la categoria
+   NON si mostra prima della risposta, e il prompt vieta istruzioni che rivelano la regola.
+   Richiamo: colonne `richiamo_passo`/`richiamo_data` in pillole, intervalli `INTERVALLI_RICHIAMO` in api.js.
 13. **Costi sotto controllo**: ogni chiamata viene registrata in `consumi`; c'è un limite di `LIMITE_AI_GIORNO` chiamate in 24 ore.
    L'audio TTS è messo in cache nel browser per frase.
 

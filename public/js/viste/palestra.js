@@ -21,6 +21,7 @@ const GRUPPI = [
   ]],
   ['Cultura', 'cultura', [
     ['cultura', 'Pillole illimitate: a sorpresa, per tema o su un argomento che scegli tu.'],
+    ['richiamo', 'Domande nuove sui testi letti giorni fa: tornano a intervalli sempre più lunghi.'],
   ]],
   ['Ripasso', 'costanza', [
     ['ripasso', 'Tutte le carte in scadenza.'],
@@ -33,7 +34,7 @@ export async function mostra(box, { vai }) {
   svuota(box,
     h('h1', 'Palestra'),
     h('p', { class: 'muted small' }, 'Allenati quando vuoi, oltre alla sessione del giorno.'),
-    h('button', { class: 'btn primario pieno', onclick: () => vai('sessione/infinita') }, '∞ Allenamento infinito: scelgo io l\'esercizio più utile'),
+    h('button', { class: 'btn primario pieno', onclick: () => vai('sessione/infinita') }, '∞ Allenamento infinito: tutti gli esercizi a rotazione'),
     GRUPPI.map(([nome, area, voci]) => h('div', { class: 'sezione' },
       h('h2', h('span', { class: 'chip ' + area }, nome)),
       h('div', { class: 'card' }, h('ul', { class: 'lista' }, voci.map(([id, desc]) => {

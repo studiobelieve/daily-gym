@@ -21,6 +21,7 @@ const MODULI = {
   riepilogo: () => import('../esercizi/riepilogo.js'),
   lacune: () => import('../esercizi/lacune.js'),
   difficili: () => import('../esercizi/ripasso.js'),
+  richiamo: () => import('../esercizi/richiamo.js'),
 };
 
 export async function mostra(box, { nome, parametri, vai, attuale }) {

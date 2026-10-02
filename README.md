@@ -16,11 +16,13 @@ Si usa dal telefono e dal computer con gli stessi dati.
 
 La prima sessione parte con un **test di livello** (8 minuti).
 
-**Allenamento infinito ∞** (da Oggi o dalla Palestra): un esercizio dopo l'altro, finché non premi *Termina*. Ogni volta l'app sceglie il più utile:
-1. prima le carte in scadenza;
-2. poi le lacune di inglese;
-3. poi gli esercizi dove vai peggio, o che non fai da più tempo;
-4. infine il programma, cioè pillole, writing, dettato, speaking e memoria.
+**Allenamento infinito ∞** (da Oggi o dalla Palestra): un esercizio dopo l'altro, finché non premi *Termina*.
+- Un esercizio su due è di **cultura**: una pillola nuova, alternata a *Ti ricordi?* quando ci sono testi da richiamare. Le pillole sono in inglese, quindi allenano anche quello.
+- Gli altri girano in modo **equo** su tutti gli esercizi della Palestra: ripasso, nomi, palazzo, digit span, writing, dettato, speaking, lacune, carte difficili. Nessuno torna finché gli altri non sono usciti lo stesso numero di volte. Si evita la stessa area due volte di fila, e a parità esce più spesso quello in cui vai peggio. Ripasso, lacune e carte difficili escono solo se c'è qualcosa da fare.
+
+**Ti ricordi? (cultura)**: domande nuove, diverse da quelle del quiz, sulle pillole lette giorni fa. La prima volta arrivano il giorno dopo la lettura, poi dopo 3, 7, 14, 30, 60 e 120 giorni se rispondi bene. Se sbagli, il testo torna il giorno dopo.
+
+**Lacune**: durante l'esercizio non vedi la categoria dell'errore (es. "articoli"), perché trovare la regola fa parte dell'allenamento. La vedi dopo aver risposto.
 
 Tutto è collegato: gli errori dello speaking diventano lacune, le lacune diventano esercizi, i passi fatti nell'infinito contano anche per la sessione del giorno.
 

@@ -20,10 +20,11 @@ export const ESERCIZI = {
   riepilogo: { nome: 'Riepilogo settimanale', area: 'costanza', minuti: 2, ai: false },
   lacune: { nome: 'Lavoro sulle lacune', area: 'inglese', minuti: 5, ai: true },
   difficili: { nome: 'Carte difficili', area: 'costanza', minuti: 3, ai: false },
+  richiamo: { nome: 'Ti ricordi? (cultura)', area: 'cultura', minuti: 3, ai: true },
 };
 
 // Se l'AI non è configurata, gli esercizi AI vengono sostituiti da esercizi offline.
-const SOSTITUTI = { cultura: 'palazzo', writing: 'span', dettato: 'span', speaking: 'nomi', lacune: 'difficili' };
+const SOSTITUTI = { cultura: 'palazzo', writing: 'span', dettato: 'span', speaking: 'nomi', lacune: 'difficili', richiamo: 'nomi' };
 
 export function pianoDelGiorno(giorno, tipo, { ai = true, testFatto = true, lacune = 0 } = {}) {
   const g = giornoSettimana(giorno);
@@ -52,38 +53,58 @@ export function minutiTotali(passi) {
 
 // ---------- Allenamento infinito ----------
 // Sceglie il prossimo esercizio. stato = GET /api/allenamento/stato; fatti = id già svolti in questo
-// allenamento, dal più vecchio al più recente. Priorità: ripasso in scadenza, lacune, punti deboli,
-// poi il "programma" (contenuti nuovi), evitando di ripetere gli stessi esercizi di fila.
-const PROGRAMMA = ['cultura', 'writing', 'dettato', 'speaking', 'nomi', 'palazzo', 'span'];
+// allenamento, dal più vecchio al più recente.
+// - Un esercizio su due è di cultura (pillola nuova, alternata al richiamo dei testi già letti quando
+//   ce ne sono in scadenza): allena anche l'inglese.
+// - Gli altri girano in modo EQUO su tutti gli esercizi della Palestra: si sceglie tra quelli fatti
+//   meno volte in questo allenamento, evitando la stessa area di fila; a parità pesa il punto debole.
+export const ROTAZIONE = ['ripasso', 'nomi', 'writing', 'palazzo', 'dettato', 'span', 'speaking', 'lacune', 'difficili'];
+const CULTURA = ['cultura', 'richiamo'];
 
 export function prossimoEsercizio(stato, fatti = [], rng = Math.random, oggi = null) {
-  const recenti = (n) => fatti.slice(-n);
   const ai = stato.ai !== false;
-  // Apertura fissa: prima ciò che è in scadenza, poi le lacune. Dopo si alterna con pesi.
-  const fisso = (id) => ({ id, ...ESERCIZI[id], ...(id === 'ripasso' ? { limite: 15 } : {}) });
-  if (stato.daRipassare > 0 && !fatti.includes('ripasso')) return fisso('ripasso');
-  if (ai && stato.lacune > 0 && !fatti.includes('lacune') && fatti.length) return fisso('lacune');
-  const candidati = [];
-  if (stato.daRipassare > 0 && !recenti(3).includes('ripasso')) candidati.push(['ripasso', 6 + Math.min(4, stato.daRipassare / 10)]);
-  if (ai && stato.lacune > 0 && !recenti(3).includes('lacune')) candidati.push(['lacune', 3 + Math.min(4, stato.lacune / 3)]);
-  if (stato.difficili > 0 && !recenti(5).includes('difficili')) candidati.push(['difficili', 1.5]);
-  for (const id of PROGRAMMA) {
-    if (recenti(2).includes(id)) continue;
-    if (!ai && ESERCIZI[id].ai) continue;
+  const passo = (id) => {
+    const p = { id, ...ESERCIZI[id] };
+    if (id === 'ripasso') p.limite = 15;
+    if (id === 'speaking') p.minuti = 5;
+    return p;
+  };
+  // Si parte dalle carte in scadenza, se ce ne sono.
+  if (!fatti.length && stato.daRipassare > 0) return passo('ripasso');
+
+  if (ai && fatti.length % 2 === 1) {
+    const ultimaCultura = [...fatti].reverse().find((id) => CULTURA.includes(id));
+    return passo(stato.richiamo > 0 && ultimaCultura === 'cultura' ? 'richiamo' : 'cultura');
+  }
+
+  const disponibile = (id) => {
+    if (!ai && ESERCIZI[id].ai) return false;
+    if (id === 'ripasso') return stato.daRipassare > 0;
+    if (id === 'lacune') return stato.lacune > 0;
+    if (id === 'difficili') return stato.difficili > 0;
+    return true;
+  };
+  const pool = ROTAZIONE.filter(disponibile);
+  const volte = (id) => fatti.filter((x) => x === id).length;
+  const minimo = Math.min(...pool.map(volte));
+  let scelta = pool.filter((id) => volte(id) === minimo);
+  const altri = fatti.filter((id) => !CULTURA.includes(id));
+  const ultimo = altri[altri.length - 1];
+  if (scelta.length > 1) scelta = scelta.filter((id) => id !== ultimo);
+  const areaUltima = ultimo && ESERCIZI[ultimo] ? ESERCIZI[ultimo].area : null;
+  const altraArea = scelta.filter((id) => ESERCIZI[id].area !== areaUltima);
+  if (altraArea.length) scelta = altraArea;
+  // A parità: più spesso ciò in cui vai peggio o che non fai da tempo.
+  const peso = (id) => {
     const m = (stato.medie || {})[id];
-    // Più è basso il punteggio recente, più spesso torna. Mai fatto o fatto da tempo: bonus novità.
     const debolezza = m && m.media != null && m.media < 75 ? (75 - m.media) / 20 : 0;
     let novita = 1.5;
     if (m && m.ultimo && oggi) novita = Math.min(3, Math.max(0, (Date.parse(oggi) - Date.parse(m.ultimo)) / 86400000)) / 2;
-    candidati.push([id, 1 + debolezza + novita]);
-  }
-  if (!candidati.length) candidati.push([ai ? 'cultura' : 'nomi', 1]);
-  const tot = candidati.reduce((s, [, w]) => s + w, 0);
+    return 1 + debolezza + novita;
+  };
+  const pesi = scelta.map((id) => [id, peso(id)]);
+  const tot = pesi.reduce((s, [, w]) => s + w, 0);
   let x = rng() * tot;
-  let scelto = candidati[candidati.length - 1][0];
-  for (const [id, w] of candidati) { x -= w; if (x <= 0) { scelto = id; break; } }
-  const passo = { id: scelto, ...ESERCIZI[scelto] };
-  if (scelto === 'ripasso') passo.limite = 15;
-  if (scelto === 'speaking') passo.minuti = 5;
-  return passo;
+  for (const [id, w] of pesi) { x -= w; if (x <= 0) return passo(id); }
+  return passo(pesi[pesi.length - 1][0]);
 }

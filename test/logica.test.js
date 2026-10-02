@@ -150,24 +150,33 @@ I am agree => I agree | "Agree" è già un verbo
   assert.equal(d.length, 2);
 });
 
-test('Allenamento infinito: ripasso e lacune prima, poi punti deboli, senza ripetere di fila', () => {
-  let i = 0;
-  const seq = [0.01, 0.5, 0.99, 0.3, 0.7, 0.1, 0.9, 0.45];
-  const rng = () => seq[i++ % seq.length];
-  const stato = { ai: true, daRipassare: 30, lacune: 9, difficili: 3, medie: { nomi: { media: 30, ultimo: '2026-10-01' }, span: { media: 90, ultimo: '2026-10-02' } } };
+test('Allenamento infinito: cultura ogni 2, tutti gli esercizi a rotazione equa', () => {
+  const stato = { ai: true, daRipassare: 30, lacune: 9, difficili: 3, richiamo: 2, medie: { nomi: { media: 30, ultimo: '2026-10-01' }, span: { media: 90, ultimo: '2026-10-02' } } };
   assert.equal(prossimoEsercizio(stato, [], () => 0, '2026-10-02').id, 'ripasso');
   assert.equal(prossimoEsercizio(stato, [], () => 0, '2026-10-02').limite, 15);
-  assert.equal(prossimoEsercizio(stato, ['ripasso'], () => 0.99, '2026-10-02').id, 'lacune', 'dopo il ripasso, le lacune');
   const fatti = [];
-  for (let k = 0; k < 40; k++) fatti.push(prossimoEsercizio(stato, fatti, rng, '2026-10-02').id);
+  for (let k = 0; k < 36; k++) fatti.push(prossimoEsercizio(stato, fatti, Math.random, '2026-10-02').id);
+  for (let k = 1; k < fatti.length; k += 2) assert.ok(['cultura', 'richiamo'].includes(fatti[k]), 'cultura ogni 2: ' + fatti.join(','));
+  assert.ok(fatti.includes('richiamo') && fatti.includes('cultura'));
   for (let k = 1; k < fatti.length; k++) assert.notEqual(fatti[k], fatti[k - 1], 'mai lo stesso esercizio due volte di fila');
-  // senza AI niente esercizi AI
-  const senza = Array.from({ length: 30 }, () => prossimoEsercizio({ ...stato, ai: false }, [], Math.random).id);
-  assert.ok(!senza.some((id) => ['cultura', 'writing', 'dettato', 'speaking', 'lacune'].includes(id)));
-  // punto debole (nomi 30%) esce più spesso di uno forte (span 90%)
-  const conta = { nomi: 0, span: 0 };
-  for (let k = 0; k < 3000; k++) { const id = prossimoEsercizio({ ai: true, daRipassare: 0, lacune: 0, difficili: 0, medie: stato.medie }, [], Math.random, '2026-10-02').id; if (id in conta) conta[id]++; }
-  assert.ok(conta.nomi > conta.span * 1.5, JSON.stringify(conta));
+  // Gli altri 18 posti: tutti i 9 esercizi della rotazione, 2 volte ciascuno.
+  const altri = fatti.filter((_, k) => k % 2 === 0);
+  for (const id of ['ripasso', 'nomi', 'writing', 'palazzo', 'dettato', 'span', 'speaking', 'lacune', 'difficili']) {
+    assert.equal(altri.filter((x) => x === id).length, 2, id + ' in ' + altri.join(','));
+  }
+  // Mai due esercizi della stessa area di fila (tra quelli non di cultura) quando c'è alternativa.
+  const area = { ripasso: 'c', difficili: 'c', nomi: 'm', palazzo: 'm', span: 'm', writing: 'i', dettato: 'i', speaking: 'i', lacune: 'i' };
+  let stesse = 0;
+  for (let k = 1; k < altri.length; k++) if (area[altri[k]] === area[altri[k - 1]]) stesse++;
+  assert.ok(stesse <= 3, altri.join(','));
+  // Senza AI: niente esercizi AI, niente cultura.
+  const senza = [];
+  for (let k = 0; k < 20; k++) senza.push(prossimoEsercizio({ ...stato, ai: false }, senza, Math.random).id);
+  assert.ok(!senza.some((id) => ['cultura', 'richiamo', 'writing', 'dettato', 'speaking', 'lacune'].includes(id)), senza.join(','));
+  // Senza carte, lacune o testi da richiamare: non escono ripasso, lacune, difficili, richiamo.
+  const vuoto = [];
+  for (let k = 0; k < 20; k++) vuoto.push(prossimoEsercizio({ ai: true, daRipassare: 0, lacune: 0, difficili: 0, richiamo: 0 }, vuoto, Math.random).id);
+  assert.ok(!vuoto.some((id) => ['ripasso', 'lacune', 'difficili', 'richiamo'].includes(id)), vuoto.join(','));
 });
 
 test('Sessione completa: le lacune entrano solo se ce ne sono abbastanza', () => {

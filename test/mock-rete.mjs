@@ -22,6 +22,13 @@ Hi Mark, I am writing to confirm our meeting next Tuesday. See you soon.
 [FRASE] The weather in Naples was beautiful yesterday. || Il tempo a Napoli ieri era bellissimo.
 [FRASE] Could you send me the report by Friday? || Potresti mandarmi il report entro venerdì?
 [FRASE] She has never been to London before. || Non è mai stata a Londra prima.`],
+  ['memory-check questions', (corpo) => {
+    const ids = [...JSON.stringify(corpo.messages).matchAll(/pillola id=\\"(\d+)\\"/g)].map((m) => m[1]);
+    return ids.flatMap((id) => [
+      `[DOMANDA] ${id} || Who was the first Roman emperor? || Augustus || Nero || Caligula`,
+      `[DOMANDA] ${id} || What did the Romans build? || Roads and bridges || Pyramids || Skyscrapers`,
+    ]).join('\n');
+  }],
   ['teaches communication skills', () => `[TITOLO] Repeat Their Last Words
 [TESTO]
 Imagine a client says: "The price is too high for us." You answer only: "Too high?" Then you wait.
