@@ -51,6 +51,7 @@ function apri(span) {
     const msg = h('p', { class: 'small', style: { margin: 0 } });
     const salva = h('button', { class: 'btn primario pieno', type: 'submit' }, '+ Aggiungi alle carte');
     let richiesta = 0;
+    let espr = null; // espressione proposta (es. "fell apart"), per il significato nella forma base
 
     const selezione = () => parole.slice(da, a + 1).map((p) => p.textContent).join(' ');
     const aggiorna = async () => {
@@ -72,13 +73,41 @@ function apri(span) {
           h('div', h('strong', r.traduzione)),
           r.base && r.base.toLowerCase() !== t.toLowerCase()
             ? h('div', { class: 'row', style: { marginTop: '4px' } }, h('span', { class: 'muted' }, `Forma base: ${r.base}`),
-              h('button', { class: 'btn piccolo', type: 'button', onclick: () => { en.value = r.base; } }, 'Usa questa'))
+              h('button', { class: 'btn piccolo', type: 'button', onclick: () => { en.value = r.base; if (espr && espr.base && espr.base.toLowerCase() === r.base.toLowerCase() && espr.traduzione) it.value = espr.traduzione; } }, 'Usa questa'))
             : null,
           r.nota ? h('div', { class: 'muted', style: { marginTop: '4px' } }, r.nota) : null);
+        if (r.espressione && a === da) {
+          const range = trovaEspressione(r.espressione.testo);
+          if (range) {
+            info.appendChild(h('div', { class: 'card stack', style: { marginTop: '8px', padding: '10px' } },
+              h('div', h('span', { class: 'muted' }, 'Qui fa parte di '), h('strong', r.espressione.testo),
+                r.espressione.base ? h('span', { class: 'muted' }, ` (${r.espressione.base})`) : null),
+              r.espressione.traduzione ? h('div', r.espressione.traduzione) : null,
+              h('button', { class: 'btn primario piccolo', type: 'button', onclick: () => { espr = r.espressione; [da, a] = range; ridisegnaComandi(); aggiorna(); } }, 'Usa l\'espressione intera')));
+          }
+        }
         if (r.esistente) msg.textContent = `Hai già una carta per "${r.esistente.fronte}". Puoi aggiungerla comunque.`;
       } catch (err) {
         if (mio === richiesta) svuota(info, h('span', { class: 'muted' }, 'Traduzione non disponibile: scrivila tu. (' + err.message + ')'));
       }
+    };
+
+    // Trova nella frase le parole dell'espressione (anche separate, es. "pick it up"), vicino alla parola toccata.
+    const trovaEspressione = (espr) => {
+      const pezzi = espr.toLowerCase().split(/\s+/).map((x) => x.replace(/[^a-z'’-]/g, '')).filter(Boolean);
+      const testi = parole.map((p) => p.textContent.toLowerCase());
+      const toccata = parole.indexOf(span);
+      let migliore = null;
+      for (let i = 0; i < testi.length; i++) {
+        if (testi[i] !== pezzi[0]) continue;
+        let j = i, k = 1;
+        for (let x = i + 1; x < testi.length && k < pezzi.length && x - i < pezzi.length + 3; x++) if (testi[x] === pezzi[k]) { k++; j = x; }
+        if (k < pezzi.length) continue;
+        const r = [i, j];
+        if (i <= toccata && toccata <= j) return r;
+        if (!migliore || Math.abs(i - toccata) < Math.abs(migliore[0] - toccata)) migliore = r;
+      }
+      return migliore;
     };
 
     const btn = (testoBtn, fn, attivo) => h('button', { class: 'btn piccolo', type: 'button', disabled: !attivo(), onclick: () => { fn(); ridisegnaComandi(); aggiorna(); } }, testoBtn);
@@ -109,6 +138,7 @@ function apri(span) {
     campo('In inglese (fronte della carta)', en),
     campo('Significato', it),
     campo('Frase di esempio', nota),
+    h('p', { class: 'tiny muted', style: { margin: 0 } }, 'Per salvare più parole insieme usa "+ parola", oppure scrivile direttamente nel campo qui sopra.'),
     msg, salva);
   }, { onChiudi: () => parole.forEach((p) => p.classList.remove('sel')) });
 }

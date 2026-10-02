@@ -52,7 +52,7 @@ Did you know that many roads in Europe still follow Roman paths? The Roman Empir
 
 It started in 27 BC, when Augustus became the first emperor. At its largest, it covered land from Britain to Egypt.
 
-The Romans built roads, bridges and aqueducts. Many of them still exist today, and you can visit them in Italy and in other countries.
+The Romans built roads, bridges and aqueducts. Many of them still exist today. Later the empire fell apart.
 [PAROLA] empire => impero
 [PAROLA] emperor => imperatore
 [PAROLA] bridge => ponte
@@ -68,7 +68,8 @@ The Romans built roads, bridges and aqueducts. Many of them still exist today, a
 [ITEM] ausiliari (do/be/have) || correggi || Correggi la parte sbagliata || I am agree with you. || I agree || agree è un verbo`],
   ['concise English-Italian dictionary', (corpo) => {
     const t = (corpo.messages[0].content.match(/<testo_utente>([^<]*)</) || [])[1] || '';
-    const diz = { built: ['costruirono', 'to build'], roads: ['strade', 'road'], 'built roads': ['costruirono strade', ''], empire: ['impero', ''] };
+    const diz = { built: ['costruirono', 'to build'], roads: ['strade', 'road'], 'built roads': ['costruirono strade', ''], empire: ['impero', ''], fell: ['cadde', 'to fall'], 'fell apart': ['andò in pezzi', 'to fall apart'] };
+    if (t.toLowerCase() === 'fell') return '[TRADUZIONE] cadde\n[BASE] to fall\n[NOTA]\n[ESPR] fell apart\n[ESPR_BASE] to fall apart\n[ESPR_IT] andare in pezzi, crollare';
     const [it, base] = diz[t.toLowerCase()] || ['(traduzione di ' + t + ')', ''];
     return `[TRADUZIONE] ${it}\n[BASE] ${base}\n[NOTA] ${t.toLowerCase() === 'built' ? 'Passato irregolare di "build".' : ''}`;
   }],
