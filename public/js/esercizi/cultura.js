@@ -5,8 +5,8 @@ import { inglese, ingleseParagrafi, suggerimentoTocco } from '../parola.js';
 import { api } from '../api.js';
 import { parla, fermaAudio } from '../voce.js';
 
-const CATEGORIE = { antica: 'Storia antica e medievale', moderna: 'Storia moderna', contemporanea: 'Storia contemporanea', scienza: 'Scienza', geografia: 'Luoghi e viaggi', arte: 'Arte, cinema e musica', economia: 'Economia, finanza e business', filosofia: 'Filosofia e psicologia', tecnologia: 'Tecnologia', storia: 'Storia', libero: 'A tua scelta' };
-const ICONE = { contemporanea: '📰', moderna: '⚔️', antica: '🏛', scienza: '🔬', economia: '📈', filosofia: '🧠', arte: '🎨', tecnologia: '💡', geografia: '🌍' };
+const CATEGORIE = { antica: 'Storia antica e medievale', moderna: 'Storia moderna', contemporanea: 'Storia contemporanea', scienza: 'Scienza', geografia: 'Luoghi e viaggi', arte: 'Arte, cinema e musica', economia: 'Economia, finanza e business', filosofia: 'Filosofia e psicologia', tecnologia: 'Tecnologia', comunicazione: 'Comunicazione, persuasione e negoziazione', storia: 'Storia', libero: 'A tua scelta' };
+const ICONE = { contemporanea: '📰', moderna: '⚔️', antica: '🏛', scienza: '🔬', economia: '📈', filosofia: '🧠', arte: '🎨', tecnologia: '💡', geografia: '🌍', comunicazione: '🤝' };
 
 export async function avvia(box, opz) {
   // Nella sessione del giorno: la pillola di oggi. Dalla Palestra: sempre una nuova, quante ne vuoi.
