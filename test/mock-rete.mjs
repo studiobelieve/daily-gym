@@ -22,6 +22,23 @@ Hi Mark, I am writing to confirm our meeting next Tuesday. See you soon.
 [FRASE] The weather in Naples was beautiful yesterday. || Il tempo a Napoli ieri era bellissimo.
 [FRASE] Could you send me the report by Friday? || Potresti mandarmi il report entro venerdì?
 [FRASE] She has never been to London before. || Non è mai stata a Londra prima.`],
+  ['teaches communication skills', () => `[TITOLO] Repeat Their Last Words
+[TESTO]
+Imagine a client says: "The price is too high for us." You answer only: "Too high?" Then you wait.
+
+This is mirroring. You repeat the last words, and the other person explains more. People feel heard, and you learn what they really think.
+
+At work this week, try it in a meeting. Say: "Too high?" and stay quiet for a few seconds.
+
+Does it still hold up? It is a simple, low-risk way to build rapport, but use it naturally, not all the time.
+[PAROLA] to repeat => ripetere
+[PAROLA] to wait => aspettare
+[PAROLA] to explain => spiegare
+[PAROLA] meeting => riunione
+[DOMANDA] What do you repeat when you mirror? || The last words || The first sentence || Their name
+[DOMANDA] What do you do after mirroring? || Stay quiet || Ask why || Change topic
+[DOMANDA] Why does mirroring work? || People feel heard || People feel afraid || People get bored
+[DA_RICORDARE] Ripeti le ultime 1-3 parole dell'altro e resta in silenzio: ti spiegherà di più.`],
   ['encyclopedia material', () => `[TITOLO] The Empire That Built Roads
 [TESTO]
 Did you know that many roads in Europe still follow Roman paths? The Roman Empire was one of the biggest empires in history.

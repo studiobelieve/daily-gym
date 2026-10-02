@@ -197,3 +197,19 @@ test('Cultura: argomento libero, niente risultati a caso', async () => {
   assert.equal(await cercaArgomento('power posing', 'B1', finto([['list=search', { query: { search: [{ title: 'Nuclear power' }] } }]])), null);
   assert.equal(await cercaArgomento('caffè', 'B1', finto([['list=search', { query: { search: [{ title: 'Caffè latte' }] } }]])), 'Caffè latte');
 });
+
+test('percorsi dai libri: lezioni in ordine, chiavi uniche, aree in rotazione', async () => {
+  const { AREE_LIBRI, LEZIONI } = await import('../lib/libri.js');
+  const { CATEGORIE, ORDINE_CATEGORIE, prossimoArgomento } = await import('../lib/cultura.js');
+  for (const k of Object.keys(AREE_LIBRI)) {
+    assert.ok(CATEGORIE[k].libri && CATEGORIE[k].argomenti.length >= 20, k);
+    assert.ok(ORDINE_CATEGORIE.includes(k), k);
+  }
+  assert.ok(Object.keys(CATEGORIE).every((k) => ORDINE_CATEGORIE.includes(k)));
+  assert.ok(Object.keys(LEZIONI).length > 150);
+  for (const l of Object.values(LEZIONI)) assert.ok(l.nota.length > 40 && l.numero <= l.totale);
+  const primo = CATEGORIE.negoziazione.argomenti[0];
+  assert.equal(primo, 'Never Split the Difference — Tactical empathy');
+  const i = ORDINE_CATEGORIE.indexOf('negoziazione');
+  assert.deepEqual(prossimoArgomento([primo], i), { categoria: 'negoziazione', argomento: 'Never Split the Difference — Mirroring' });
+});

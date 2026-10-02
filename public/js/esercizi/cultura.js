@@ -5,8 +5,8 @@ import { inglese, ingleseParagrafi, suggerimentoTocco } from '../parola.js';
 import { api } from '../api.js';
 import { parla, fermaAudio } from '../voce.js';
 
-const CATEGORIE = { antica: 'Storia antica e medievale', moderna: 'Storia moderna', contemporanea: 'Storia contemporanea', scienza: 'Scienza', geografia: 'Luoghi e viaggi', arte: 'Arte, cinema e musica', economia: 'Economia, finanza e business', filosofia: 'Filosofia e psicologia', tecnologia: 'Tecnologia', comunicazione: 'Comunicazione, persuasione e negoziazione', storia: 'Storia', libero: 'A tua scelta' };
-const ICONE = { contemporanea: '📰', moderna: '⚔️', antica: '🏛', scienza: '🔬', economia: '📈', filosofia: '🧠', arte: '🎨', tecnologia: '💡', geografia: '🌍', comunicazione: '🤝' };
+const CATEGORIE = { antica: 'Storia antica e medievale', moderna: 'Storia moderna', contemporanea: 'Storia contemporanea', scienza: 'Scienza', geografia: 'Luoghi e viaggi', arte: 'Arte, cinema e musica', economia: 'Economia, finanza e business', filosofia: 'Filosofia e psicologia', tecnologia: 'Tecnologia', persuasione: 'Persuasione', negoziazione: 'Negoziazione', corpo: 'Linguaggio del corpo', personale: 'Comunicazione personale', comunicazione: 'Comunicazione, persuasione e negoziazione', storia: 'Storia', libero: 'A tua scelta' };
+const ICONE = { contemporanea: '📰', moderna: '⚔️', antica: '🏛', scienza: '🔬', economia: '📈', filosofia: '🧠', arte: '🎨', tecnologia: '💡', geografia: '🌍', persuasione: '🧲', negoziazione: '🤝', corpo: '🧍', personale: '💬' };
 
 export async function avvia(box, opz) {
   // Nella sessione del giorno: la pillola di oggi. Dalla Palestra: sempre una nuova, quante ne vuoi.
@@ -28,7 +28,7 @@ function scegliArgomento(box) {
     svuota(box, h('div', { class: 'stack' },
       h('div', { class: 'card stack' },
         h('h2', { style: { margin: 0 } }, 'Nuova pillola'),
-        h('p', { class: 'small muted', style: { margin: 0 } }, 'Una pagina vera di Wikipedia, riscritta breve e al tuo livello. Puoi farne quante vuoi.'),
+        h('p', { class: 'small muted', style: { margin: 0 } }, 'Una pagina vera di Wikipedia, riscritta breve e al tuo livello. Persuasione, negoziazione, linguaggio del corpo e comunicazione sono lezioni in ordine dai libri migliori. Puoi farne quante vuoi.'),
         h('button', { class: 'btn primario pieno', onclick: () => ok({}) }, '🎲 A sorpresa')),
       h('div', { class: 'card stack' },
         h('h3', { style: { margin: 0 } }, 'Scegli un tema'),
@@ -74,6 +74,7 @@ export async function mostraPillola(box, p, opz = {}) {
         } }, '+ carta');
         return h('li', { class: 'row between' }, h('span', { class: 'grow' }, h('strong', g.en), ' — ', g.it), b);
       }))) : null,
+    p.fonte ? h('p', { class: 'tiny muted' }, '📚 ' + p.fonte) : null,
     p.fonte_url ? h('p', { class: 'tiny muted' }, 'Fonte: ', h('a', { href: p.fonte_url, target: '_blank', rel: 'noopener' }, 'Wikipedia'), ' (testo adattato).') : null,
     h('button', { class: 'btn primario pieno', onclick: () => { fermaAudio(); inAscolto = false; ok(); } }, p.completata ? 'Rifai il quiz' : 'Vai al quiz'))));
 

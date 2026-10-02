@@ -46,6 +46,8 @@ Tutto è collegato: gli errori dello speaking diventano lacune, le lacune divent
 
 **Cultura**: ogni pillola parte da una pagina vera di Wikipedia (la fonte è citata). L'AI la riscrive in inglese al tuo livello, con regole precise per ogni livello: lunghezza delle frasi, tempi verbali, vocabolario. Poi fai un quiz di 3 domande. Dalla Palestra le pillole sono illimitate: a sorpresa, per tema o su un argomento che scrivi tu. Quando gli argomenti della lista finiscono, l'app continua con pagine Wikipedia collegate a quelle già lette. Alla fine dici se il testo era troppo facile, giusto o troppo difficile, e le pillole successive si spostano di mezzo livello. Le domande diventano carte di ripasso.
 
+**Persuasione, negoziazione, linguaggio del corpo e comunicazione personale** sono percorsi a lezioni basati sui libri migliori di ogni area (Cialdini, Kahneman, Voss, Getting to Yes, Navarro, Ekman, Carnegie, Crucial Conversations e altri: 181 lezioni). Escono nella rotazione normale delle pillole e si possono scegliere dalla Palestra; vanno in ordine, libro dopo libro. Ogni lezione dice come usare la tecnica al lavoro e cosa regge oggi secondo la ricerca (es. il power posing e la PNL non reggono). I contenuti sono scritti dall'AI partendo da appunti sui libri: è una sintesi, non il libro.
+
 **Tracking**
 - Calendario della costanza.
 - Serie di giorni di fila e record.

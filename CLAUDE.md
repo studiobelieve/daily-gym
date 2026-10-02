@@ -14,6 +14,7 @@ lib/ai.js                 Anthropic SDK: chiedi({sistema, messaggi, uso}) -> tes
 lib/prompt.js             tutti i prompt (risposte nel formato a etichette [TAG])
 lib/voce.js               ElevenLabs: speech-to-text (scribe) e text-to-speech, via fetch
 lib/cultura.js            argomenti per categoria + estratto da Wikipedia (simple.wikipedia sotto B2)
+lib/libri.js              percorsi dai libri (persuasione, negoziazione, corpo, comunicazione personale): appunti per lezione
 lib/srs.js                ripetizione dilazionata (variante SM-2) + serie di giorni — PURO
 lib/livello.js            livello adattivo — PURO
 lib/statistiche.js        metriche per obiettivi, dati della pagina Progressi, riepilogo settimanale
@@ -65,6 +66,11 @@ Le dipendenze npm sono solo `pg` e `@anthropic-ai/sdk`.
    `prossimoEsercizio()` in shared/piano.js (puro, testato).
 13. **Costi sotto controllo**: ogni chiamata viene registrata in `consumi`; c'è un limite di `LIMITE_AI_GIORNO` chiamate in 24 ore.
    L'audio TTS è messo in cache nel browser per frase.
+
+14. **Le 4 aree di comunicazione NON usano Wikipedia.** Le lezioni vengono da `lib/libri.js` (appunti scritti a mano,
+   mai testo copiato dai libri) e da `promptLezioneLibro`. Ogni libro ha `affidabilita` e `avvertenza`: ciò che la ricerca
+   non conferma (power posing, PNL, "gesto = bugia", microespressioni come lie detector) deve essere detto nella lezione.
+   La chiave dell'argomento è "Titolo libro — Lezione": non cambiarla, o le lezioni già fatte tornano come nuove.
 
 ## Provare in locale
 
