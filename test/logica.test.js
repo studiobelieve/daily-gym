@@ -5,7 +5,7 @@ import { pianifica, serie } from '../lib/srs.js';
 import { valutaLivello, livelloDaTest } from '../lib/livello.js';
 import { serieRecord } from '../lib/statistiche.js';
 import {
-  normalizza, confronta, confrontaFrase, parseTag, primo, tuttiTag, campi, numero, aggiungiGiorni, giornoSettimana,
+  normalizza, confronta, confrontaFrase, parseTag, primo, tuttiTag, voci, campi, numero, aggiungiGiorni, giornoSettimana,
 } from '../public/js/shared/testo.js';
 import { avanzamento, suggerimenti, formatta } from '../public/js/shared/obiettivi.js';
 import { pianoDelGiorno } from '../public/js/shared/piano.js';
@@ -132,4 +132,20 @@ test('Cultura: rotazione delle categorie senza ripetere argomenti', () => {
     viste.add(p.categoria);
   }
   assert.equal(viste.size, Object.keys(CATEGORIE).length);
+});
+
+test('Liste: più voci sotto una sola etichetta, una per riga (risposta reale di Claude)', () => {
+  const t = `[VOTO] 60
+[ERRORE] I write for confirm => I am writing to confirm || Per lo scopo si usa "to" + verbo.
+Nelle email si dice "I am writing".
+I am agree => I agree | "Agree" è già un verbo
+- the next Tuesday => next Tuesday || niente articolo
+[BRAVO] ok`;
+  const e = voci(parseTag(t), 'ERRORE');
+  assert.equal(e.length, 3);
+  assert.deepEqual(campi(e[0]), ['I write for confirm', 'I am writing to confirm', 'Per lo scopo si usa "to" + verbo. Nelle email si dice "I am writing".']);
+  assert.deepEqual(campi(e[1]).slice(0, 2), ['I am agree', 'I agree']);
+  assert.deepEqual(campi(e[2]).slice(0, 2), ['the next Tuesday', 'next Tuesday']);
+  const d = voci(parseTag('[FRASE] One two three || Uno due tre\nFour five six || Quattro'), 'FRASE', '||');
+  assert.equal(d.length, 2);
 });

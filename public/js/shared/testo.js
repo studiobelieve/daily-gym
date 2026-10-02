@@ -138,6 +138,22 @@ export function tuttiTag(tags, nome) {
   return tags.filter((x) => x.tag === nome).map((x) => x.valore).filter(Boolean);
 }
 
+// Come tuttiTag, ma per le liste "una voce per riga": il modello a volte scrive più voci
+// sotto una sola etichetta, una per riga, senza ripeterla. Una riga che contiene il separatore
+// (es. "=>" o "||") apre una voce nuova; le altre righe continuano la voce precedente.
+export function voci(tags, nome, separatore = '=>') {
+  const out = [];
+  for (const valore of tuttiTag(tags, nome)) {
+    for (const riga of valore.split('\n')) {
+      const r = riga.replace(/^\s*(?:[-*•]|\d+[.)])\s+/, '').trim();
+      if (!r) continue;
+      if (r.includes(separatore) || !out.length) out.push(r);
+      else out[out.length - 1] += ' ' + r;
+    }
+  }
+  return out;
+}
+
 // "a => b || c" -> ['a', 'b', 'c'] ; separatori tollerati: => -> → e || |
 export function campi(valore) {
   const [testa, ...coda] = String(valore).split(/\s*\|\|?\s*/);
