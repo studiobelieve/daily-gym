@@ -4,6 +4,7 @@ import { api, oggi } from '../api.js';
 import { linea, barre, heatmap } from '../grafici.js';
 import { LIVELLI, aggiungiGiorni, indiceLivello } from '../shared/testo.js';
 import { vistaRiepilogo } from '../esercizi/riepilogo.js';
+import { oreMinuti } from '../shared/obiettivi.js';
 
 // Un punto per giorno: massimo (record) o media.
 function perGiorno(attivita, tipo, campo = 'punteggio', modo = 'media', filtro = () => true) {
@@ -95,6 +96,13 @@ export async function mostra(box) {
       h('div', { class: 'tile' }, h('div', { class: 'num' }, consolidate), h('div', { class: 'lab' }, 'carte consolidate'))),
     h('div', { class: 'sezione' }, h('h2', 'Costanza'),
       h('div', { class: 'card' }, heatmap(g, Object.fromEntries(d.attivitaGiorno.map((x) => [x.giorno, x.n])), new Set(d.giorniSessione)))),
+    h('div', { class: 'sezione' }, h('h2', `Tempo di esercizio (obiettivo ${oreMinuti(d.tempo.obiettivo)} a settimana)`),
+      h('div', { class: 'card stack' },
+        h('div', { class: 'small' }, `Settimane raggiunte: ${d.tempo.settimane.filter((s) => s.raggiunto).length} su ${settimaneUsate(d.tempo.settimane).length}`),
+        settimaneUsate(d.tempo.settimane).reverse().map((s, i) => h('div', { class: 'stack', style: { gap: '4px' } },
+          h('div', { class: 'row between tiny' }, h('span', i === 0 ? 'Questa settimana' : 'Dal ' + new Date(s.inizio + 'T12:00:00').toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })),
+            h('span', { class: s.raggiunto ? '' : 'muted' }, oreMinuti(s.minuti) + (s.raggiunto ? ' ✓' : ''))),
+          barra(Math.min(100, Math.round((s.minuti / d.tempo.obiettivo) * 100))))))),
     h('div', { class: 'sezione' }, h('h2', 'Questa settimana'), await vistaRiepilogo(rie)),
     h('div', { class: 'sezione' }, h('h2', 'Inglese'), livelloBox),
     h('div', { class: 'sezione' }, h('h2', 'Andamento per area'),
@@ -106,4 +114,10 @@ export async function mostra(box) {
         h('p', `ElevenLabs voce: ${tts ? Math.round(tts.unita).toLocaleString('it-IT') + ' caratteri' : 'nessun uso'} · trascrizione: ${stt ? '~' + Math.round(stt.unita / 60) + ' min' : 'nessun uso'}`),
         h('p', { class: 'tiny muted', style: { margin: 0 } }, 'Claude: stima calcolata dai token. ElevenLabs si paga a crediti secondo il tuo piano: qui vedi i caratteri usati da confrontare con quelli inclusi.'))));
   disegnaArea('memoria');
+}
+
+// Le settimane vuote prima del primo allenamento non contano (l'app non c'era ancora).
+function settimaneUsate(settimane) {
+  const primo = settimane.findIndex((s) => s.minuti > 0);
+  return settimane.slice(primo < 0 ? settimane.length - 1 : primo);
 }

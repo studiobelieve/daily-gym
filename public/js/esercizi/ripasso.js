@@ -40,11 +40,12 @@ export async function avvia(box, opz) {
     if (opz.attuale && !opz.attuale()) return null;
     contatore.textContent = `${coda.length} ${coda.length === 1 ? 'carta' : 'carte'} rimaste`;
     const voce = coda.shift();
+    const t0 = Date.now();
     const voto = await mostraCarta(area, voce.c, opz.segnale);
     if (opz.segnale && opz.segnale.aborted) return null;
     totali++;
     if (voto >= 3) ricordate++;
-    api.post('/api/ripasso', { id: voce.c.id, voto }).catch((e) => console.error(e));
+    api.post('/api/ripasso', { id: voce.c.id, voto, secondi: Math.min(120, Math.round((Date.now() - t0) / 1000)) }).catch((e) => console.error(e));
     // Sbagliata: torna in fondo alla coda (massimo due volte), così la rivedi oggi stesso.
     if (voto === 0 && voce.giri < 2) coda.push({ c: voce.c, giri: voce.giri + 1 });
   }

@@ -3,7 +3,7 @@ import { h, svuota, segmenti, barra, dataLunga } from '../ui.js';
 import { api, oggi } from '../api.js';
 import { pianoDelGiorno, minutiTotali } from '../shared/piano.js';
 import { passiFatti, durataPreferita, impostaDurata, chiavePasso } from '../locale.js';
-import { formatta, STATI } from '../shared/obiettivi.js';
+import { formatta, STATI, oreMinuti } from '../shared/obiettivi.js';
 
 const COLORE_AREA = { inglese: 'var(--accent)', memoria: 'var(--memoria)', cultura: 'var(--cultura)', costanza: 'var(--costanza)' };
 
@@ -29,12 +29,12 @@ export async function mostra(box, { vai }) {
       svuota(heroBox, h('div', { class: 'hero' },
         h('div', { class: 'titolo' }, 'Allenamento infinito'),
         scelta(),
-        h('p', { class: 'small', style: { margin: '12px 0' } }, 'Un esercizio dopo l\'altro, finché non ti fermi tu. L\'app sceglie ogni volta il più utile:'),
+        h('p', { class: 'small', style: { margin: '12px 0' } }, 'Un esercizio dopo l\'altro, finché non ti fermi tu:'),
         h('ul', { class: 'passi' },
           h('li', h('span', { class: 'pallino', style: { borderColor: COLORE_AREA.costanza } }), h('span', { class: 't grow' }, 'Ripasso delle carte', h('span', { class: 'muted small' }, ` · ${d.daRipassare} in scadenza`))),
           h('li', h('span', { class: 'pallino', style: { borderColor: COLORE_AREA.inglese } }), h('span', { class: 't grow' }, 'Le tue lacune di inglese', h('span', { class: 'muted small' }, d.lacune ? ` · ${d.lacune} da superare` : ' · ancora nessuna'))),
-          h('li', h('span', { class: 'pallino', style: { borderColor: COLORE_AREA.memoria } }), h('span', { class: 't grow' }, 'Punti deboli di memoria e cultura')),
-          h('li', h('span', { class: 'pallino', style: { borderColor: COLORE_AREA.cultura } }), h('span', { class: 't grow' }, 'Il programma: pillole, writing, speaking e nuovi esercizi'))),
+          h('li', h('span', { class: 'pallino', style: { borderColor: COLORE_AREA.memoria } }), h('span', { class: 't grow' }, 'Tutti gli esercizi della Palestra, a rotazione')),
+          h('li', h('span', { class: 'pallino', style: { borderColor: COLORE_AREA.cultura } }), h('span', { class: 't grow' }, 'Cultura ogni 2 esercizi: pillole e "Ti ricordi?"'))),
         h('button', { class: 'btn primario pieno', onclick: () => vai('sessione/infinita') }, 'Inizia l\'allenamento')));
       return;
     }
@@ -64,6 +64,17 @@ export async function mostra(box, { vai }) {
   };
   disegnaHero();
 
+  const sett = d.settimana;
+  const mancano = Math.max(0, sett.obiettivo - sett.minuti);
+  const settimana = h('div', { class: 'card stack' },
+    h('div', { class: 'row between' }, h('strong', { class: 'small grow' }, `Allenarsi ${oreMinuti(sett.obiettivo)} questa settimana`),
+      h('span', { class: 'stato ' + (sett.raggiunto ? 'raggiunto' : sett.minuti * 100 / sett.obiettivo >= sett.attesoPct - 10 ? 'in_linea' : 'in_ritardo') },
+        sett.raggiunto ? 'Raggiunto 🎉' : sett.minuti * 100 / sett.obiettivo >= sett.attesoPct - 10 ? 'In linea' : 'In ritardo')),
+    barra(Math.min(100, Math.round((sett.minuti / sett.obiettivo) * 100)), { atteso: sett.attesoPct }),
+    h('div', { class: 'tiny muted' }, sett.raggiunto
+      ? `${oreMinuti(sett.minuti)} di esercizi: obiettivo raggiunto.`
+      : `${oreMinuti(sett.minuti)} su ${oreMinuti(sett.obiettivo)} · mancano ${oreMinuti(mancano)} in ${sett.giorniRimasti} ${sett.giorniRimasti === 1 ? 'giorno' : 'giorni'} (~${Math.ceil(mancano / sett.giorniRimasti)} min al giorno)`));
+
   const obiettivi = d.obiettivi.length
     ? h('div', { class: 'card stack' }, d.obiettivi.map((o) => h('div', { class: 'obiettivo' },
       h('div', { class: 'row between' }, h('strong', { class: 'small grow' }, o.titolo), h('span', { class: 'stato ' + o.avanzamento.stato }, STATI[o.avanzamento.stato])),
@@ -89,5 +100,6 @@ export async function mostra(box, { vai }) {
     d.pillola ? h('div', { class: 'card row', style: { marginTop: '12px' } },
       h('div', { class: 'grow' }, h('div', { class: 'tiny muted' }, 'Pillola di oggi'), h('strong', d.pillola.titolo)),
       h('button', { class: 'btn piccolo', onclick: () => vai('pillole/' + d.pillola.id) }, d.pillola.completata ? 'Rileggi' : 'Leggi')) : null,
+    h('div', { class: 'sezione' }, h('h2', 'Obiettivo della settimana'), settimana),
     h('div', { class: 'sezione' }, h('h2', 'Obiettivi in corso'), obiettivi));
 }

@@ -25,6 +25,9 @@ export async function mostra(box, { vai }) {
   const nuove = h('input', { type: 'number', min: 0, max: 50, value: d.nuove_al_giorno });
   nuove.addEventListener('change', () => salva({ nuove_al_giorno: Number(nuove.value) }));
 
+  const settimana = h('input', { type: 'number', min: 10, max: 3000, step: 10, value: d.obiettivo_settimana_minuti });
+  settimana.addEventListener('change', () => salva({ obiettivo_settimana_minuti: Number(settimana.value) }, 'Obiettivo settimanale aggiornato'));
+
   const lavoro = h('input', { type: 'text', value: d.lavoro });
   lavoro.addEventListener('change', () => salva({ lavoro: lavoro.value }));
 
@@ -48,6 +51,7 @@ export async function mostra(box, { vai }) {
       campo('Modello AI', modello, 'Opus: correzioni migliori. Haiku: costa circa un quarto. La stima della spesa è in Progressi.')),
     h('div', { class: 'card stack' },
       h('h3', 'Memoria e ripasso'),
+      campo('Obiettivo settimanale (minuti di esercizio)', settimana, '120 = 2 ore. Conta solo il tempo passato davvero negli esercizi, da lunedì a domenica.'),
       campo('Carte nuove al giorno', nuove, 'Quante carte mai viste entrano nel ripasso ogni giorno. 10 è un buon ritmo: più carte = ripassi più lunghi nei giorni dopo.'),
       h('label', { class: 'row' }, oggettiEn, h('span', 'Palazzo della memoria con oggetti in inglese (alleni anche il vocabolario)'))),
     h('div', { class: 'card stack' },

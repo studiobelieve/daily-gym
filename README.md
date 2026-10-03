@@ -48,6 +48,8 @@ Tutto è collegato: gli errori dello speaking diventano lacune, le lacune divent
 
 **Cultura**: ogni pillola parte da una pagina vera di Wikipedia (la fonte è citata). L'AI la riscrive in inglese al tuo livello, con regole precise per ogni livello: lunghezza delle frasi, tempi verbali, vocabolario. Poi fai un quiz di 3 domande. Dalla Palestra le pillole sono illimitate: a sorpresa, per tema o su un argomento che scrivi tu. Quando gli argomenti della lista finiscono, l'app continua con pagine Wikipedia collegate a quelle già lette. Alla fine dici se il testo era troppo facile, giusto o troppo difficile, e le pillole successive si spostano di mezzo livello. Le domande diventano carte di ripasso.
 
+**Obiettivo settimanale: 2 ore di esercizi.** In *Oggi* vedi quanto hai fatto da lunedì, quanto manca e quanti minuti al giorno servono per arrivarci. In *Progressi* c'è lo storico delle settimane. Conta solo il tempo passato davvero negli esercizi: ogni esercizio vale al massimo 1 ora, così un'app lasciata aperta non gonfia il conto. Nel ripasso conta il tempo su ogni carta, al massimo 2 minuti l'una. Il valore si cambia in *Impostazioni*.
+
 **Curiosità**: fatti strani ma veri (la Grande guerra degli emù, l'epidemia di ballo del 1518, l'alluvione di melassa di Boston…), da raccontare.
 
 **Tocca una parola che fa parte di un'espressione** (es. "fell" in "fell apart"): il pannello te lo dice e propone l'espressione intera, con la forma base ("to fall apart") e il significato ("andare in pezzi"). Puoi anche allargare a mano con "+ parola".

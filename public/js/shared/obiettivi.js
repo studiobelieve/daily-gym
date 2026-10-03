@@ -62,6 +62,12 @@ export const METRICHE = {
   },
 };
 
+export function oreMinuti(min) {
+  const m = Math.max(0, Math.round(min));
+  if (m < 60) return `${m} min`;
+  return `${Math.floor(m / 60)} h${m % 60 ? ' ' + (m % 60) + ' min' : ''}`;
+}
+
 export function formatta(metrica, v) {
   const m = METRICHE[metrica];
   if (v == null || Number.isNaN(v)) return '—';

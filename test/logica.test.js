@@ -234,3 +234,14 @@ test('writing: situazioni a rotazione senza ripetere quelle recenti', async () =
   }
   assert.ok(SITUAZIONI.lavoro.length >= 30 && SITUAZIONI.cultura.length >= 30);
 });
+
+test('Obiettivo settimanale: lunedì della settimana e ore/minuti', async () => {
+  const { lunedi } = await import('../lib/statistiche.js');
+  const { oreMinuti } = await import('../public/js/shared/obiettivi.js');
+  assert.equal(lunedi('2026-10-03'), '2026-09-28'); // sabato
+  assert.equal(lunedi('2026-10-04'), '2026-09-28'); // domenica
+  assert.equal(lunedi('2026-09-28'), '2026-09-28'); // lunedì
+  assert.equal(oreMinuti(120), '2 h');
+  assert.equal(oreMinuti(47), '47 min');
+  assert.equal(oreMinuti(95), '1 h 35 min');
+});
