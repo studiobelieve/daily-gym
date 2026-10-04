@@ -148,7 +148,7 @@ async function infinita(box, vai, attuale) {
     for (;;) {
       if (!attuale()) return;
       const stato = await api.get('/api/allenamento/stato');
-      const p = prossimoEsercizio(stato, fatti, Math.random, oggi());
+      const p = { ...prossimoEsercizio(stato, fatti, Math.random, oggi()), infinito: true };
       const esito = await eseguiPasso(box, p, { indice: fatti.length, passi: [], vai, attuale, infinito: { tempo } });
       if (esito === 'esci' || !attuale()) return;
       if (esito === 'termina') break;

@@ -15,6 +15,8 @@ export async function avvia(box, opz) {
     richiesta = await scegliArgomento(box);
     richiesta.nuova = true;
   }
+  // Allenamento infinito: ogni volta una pillola nuova (non quella del giorno, già letta).
+  if (opz.infinito) richiesta.nuova = true;
   svuota(box, caricamento('Preparo la pillola (leggo la fonte e la adatto al tuo livello)…'));
   const { pillola } = opz.pillolaId ? await api.get('/api/pillole/' + opz.pillolaId) : await api.post('/api/pillola', richiesta);
   return mostraPillola(box, pillola, opz);
