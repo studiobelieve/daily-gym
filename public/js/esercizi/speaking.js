@@ -201,29 +201,25 @@ export async function mostraReport(box, sc, storia, { inizio, secondiParlati = 0
   }
 
   const durataSec = Math.round((Date.now() - inizio) / 1000);
-  const selErr = k.errori.map(() => true);
   const selFrasi = k.frasi.map(() => true);
   await new Promise((ok) => svuota(box, h('div', { class: 'stack correzione' },
     h('div', { class: 'card row' },
       h('div', { class: 'voto-grande', style: { color: k.voto >= 85 ? 'var(--good)' : k.voto >= 60 ? 'var(--accent)' : 'var(--warning)' } }, k.voto),
       h('div', { class: 'grow small' }, h('div', { class: 'muted' }, `${durata(durataSec)} di conversazione`), k.bravo ? h('p', { style: { margin: '4px 0 0' } }, '👏 ' + k.bravo) : null)),
     k.errori.length ? h('div', { class: 'card' }, h('h3', 'Da migliorare'),
-      k.errori.map((e, i) => h('div', { class: 'errore-riga' }, h('label', { class: 'row', style: { alignItems: 'flex-start' } },
-        h('input', { type: 'checkbox', checked: true, onchange: (ev) => { selErr[i] = ev.target.checked; }, style: { marginTop: '5px' } }),
-        h('div', { class: 'grow' },
-          h('div', h('span', { class: 'barrato' }, e.detto), ' → ', inglese(e.meglio, { classe: 'giusto' })),
-          e.perche ? h('div', { class: 'small muted' }, e.perche) : null))))) : null,
+      k.errori.map((e) => h('div', { class: 'errore-riga' },
+        h('div', h('span', { class: 'barrato' }, e.detto), ' → ', inglese(e.meglio, { classe: 'giusto' })),
+        e.perche ? h('div', { class: 'small muted' }, e.perche) : null))) : null,
     k.frasi.length ? h('div', { class: 'card' }, h('h3', 'Frasi utili'),
       k.frasi.map((f, i) => h('div', { class: 'errore-riga' }, h('label', { class: 'row' },
         h('input', { type: 'checkbox', checked: true, onchange: (ev) => { selFrasi[i] = ev.target.checked; } }),
         h('div', { class: 'grow' }, inglese(f.en, { tag: 'strong' }), ' — ', h('span', { class: 'muted' }, f.it)),
         h('button', { class: 'icona-btn', 'aria-label': 'Ascolta', onclick: (e) => { e.preventDefault(); parla(f.en); } }, icona('audio')))))) : null,
     k.consiglio ? h('div', { class: 'card small' }, '🎯 ', k.consiglio) : null,
-    h('p', { class: 'tiny muted center' }, 'Quello che è spuntato diventa carte di ripasso. Gli errori entrano anche nelle tue lacune: l\'allenamento li riproporrà finché non li superi.'),
+    h('p', { class: 'tiny muted center' }, 'Le frasi spuntate diventano carte. Gli errori entrano nelle tue lacune: l\'allenamento li riproporrà finché non li superi.'),
     h('button', { class: 'btn primario pieno', onclick: ok }, 'Salva e continua'))));
 
   const carte = [
-    ...k.errori.filter((_, i) => selErr[i]).map((e) => ({ tipo: 'ricorda', fronte: `Dillo meglio: «${e.detto}»`, retro: e.meglio, nota: e.perche, extra: { origine: 'speaking' } })),
     ...k.frasi.filter((_, i) => selFrasi[i]).map((f) => ({ tipo: 'en', fronte: f.en, retro: f.it, nota: sc.titolo, extra: { origine: 'speaking' } })),
   ];
   if (carte.length) await api.post('/api/carte/multi', { carte });

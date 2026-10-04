@@ -106,7 +106,7 @@ export async function mostraPillola(box, p, opz = {}) {
   await new Promise((ok) => svuota(box, h('div', { class: 'card stack center' },
     h('div', { class: 'voto-grande' }, `${giuste}/${p.domande.length}`),
     daRicordare ? h('div', { class: 'card', style: { textAlign: 'left' } }, h('div', { class: 'tiny muted' }, 'Da ricordare'), h('p', { style: { margin: 0 } }, daRicordare)) : null,
-    h('p', { class: 'small muted' }, p.completata ? 'Quiz ripetuto.' : 'Le domande sono diventate carte di ripasso: le ritroverai nei prossimi giorni.'),
+    h('p', { class: 'small muted' }, p.completata ? 'Quiz ripetuto.' : 'Domani iniziano le domande di "Ti ricordi?" su questo testo, a intervalli sempre più lunghi.'),
     giudizio(p),
     h('button', { class: 'btn primario pieno', onclick: ok }, 'Avanti'))));
   return { punteggio, livello: r.livello };

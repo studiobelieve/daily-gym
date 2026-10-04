@@ -45,8 +45,8 @@ export const METRICHE = {
     descrizione: 'Quante pillole hai letto e su cui hai fatto il quiz.',
   },
   cultura_ricordata: {
-    nome: 'Nozioni di cultura consolidate', area: 'cultura', unita: 'nozioni',
-    descrizione: 'Domande di cultura che ricordi da almeno 3 settimane.',
+    nome: 'Pillole ricordate a lungo', area: 'cultura', unita: 'pillole',
+    descrizione: 'Testi di cultura ricordati bene in "Ti ricordi?" almeno 3 volte di fila (intervallo di una settimana o più).',
   },
   serie: {
     nome: 'Giorni di fila', area: 'costanza', unita: 'giorni',

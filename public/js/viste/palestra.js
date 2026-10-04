@@ -45,7 +45,7 @@ export async function mostra(box, { vai }) {
       }))))),
     h('div', { class: 'sezione' }, h('h2', 'Ripasso per tipo'),
       h('div', { class: 'segmenti' },
-        [['en', 'Solo inglese'], ['persona', 'Solo persone'], ['ricorda', 'Solo "da ricordare"'], ['cultura', 'Solo cultura']].map(([t, n]) =>
+        [['en', 'Solo inglese'], ['persona', 'Solo persone'], ['ricorda', 'Solo "da ricordare"']].map(([t, n]) =>
           h('button', { onclick: () => vai('esercizio/ripasso/' + t) }, n)))),
     stato.ai ? h('div', { class: 'sezione' }, h('h2', 'Scenari di speaking'),
       h('div', { class: 'card' }, h('ul', { class: 'lista' }, SCENARI.map((s) => h('li', { class: 'row' },
