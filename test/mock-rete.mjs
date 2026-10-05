@@ -66,12 +66,18 @@ The Romans built roads, bridges and aqueducts. Many of them still exist today. L
 [ITEM] articoli || correggi || Correggi la parte sbagliata || See you the next Monday. || next Monday || con "next" niente articolo
 [ITEM] tempi verbali || traduci || Traduci in inglese || Ti scrivo per confermare || I am writing to confirm | I'm writing to confirm || present continuous + to
 [ITEM] ausiliari (do/be/have) || correggi || Correggi la parte sbagliata || I am agree with you. || I agree || agree è un verbo`],
+  ['check English-Italian flashcards', (corpo) => {
+    const righe = corpo.messages[0].content.split('\n').filter((r) => /^\d+ \|\|/.test(r));
+    const verbi = { built: ['to build', 'costruire'], 'fell apart': ['to fall apart', 'andare in pezzi'] };
+    return righe.map((r) => { const [id, en] = r.split(' || '); const v = verbi[en.toLowerCase()]; return v ? `[CARTA] ${id} || ${v[0]} || ${v[1]}` : ''; }).filter(Boolean).join('\n');
+  }],
   ['concise English-Italian dictionary', (corpo) => {
     const t = (corpo.messages[0].content.match(/<testo_utente>([^<]*)</) || [])[1] || '';
     const diz = { built: ['costruirono', 'to build'], roads: ['strade', 'road'], 'built roads': ['costruirono strade', ''], empire: ['impero', ''], fell: ['cadde', 'to fall'], 'fell apart': ['andò in pezzi', 'to fall apart'] };
     if (t.toLowerCase() === 'fell') return '[TRADUZIONE] cadde\n[BASE] to fall\n[NOTA]\n[ESPR] fell apart\n[ESPR_BASE] to fall apart\n[ESPR_IT] andare in pezzi, crollare';
     const [it, base] = diz[t.toLowerCase()] || ['(traduzione di ' + t + ')', ''];
-    return `[TRADUZIONE] ${it}\n[BASE] ${base}\n[NOTA] ${t.toLowerCase() === 'built' ? 'Passato irregolare di "build".' : ''}`;
+    const baseIt = { 'to build': 'costruire', road: 'strada', 'to fall': 'cadere', 'to fall apart': 'andare in pezzi' }[base] || '';
+    return `[TRADUZIONE] ${it}\n[BASE] ${base}\n[BASE_IT] ${baseIt}\n[NOTA] ${t.toLowerCase() === 'built' ? 'Passato irregolare di "build".' : ''}`;
   }],
   ['conversation partner', (corpo) => {
     const n = corpo.messages.length;

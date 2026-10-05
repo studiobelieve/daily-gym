@@ -34,6 +34,7 @@ export function suggerimentoTocco() {
 }
 
 const cache = new Map();
+const verboBase = (base) => /^to\s+\S/i.test(base || '');
 
 function apri(span) {
   const parole = [...document.querySelectorAll(`.pt[data-g="${span.dataset.g}"]`)];
@@ -69,11 +70,23 @@ function apri(span) {
         cache.set(chiave, r);
         if (mio !== richiesta) return;
         it.value = r.traduzione;
+        // Verbo: la carta si salva sempre come "to + infinito", con l'infinito italiano.
+        const verbo = verboBase(r.base);
+        if (verbo) {
+          en.value = r.base;
+          it.value = (espr && espr.base && espr.base.toLowerCase() === r.base.toLowerCase() && espr.traduzione) || r.baseIt || r.traduzione;
+        }
         svuota(info,
           h('div', h('strong', r.traduzione)),
-          r.base && r.base.toLowerCase() !== t.toLowerCase()
+          verbo
+            ? h('div', { class: 'row', style: { marginTop: '4px' } },
+              h('span', { class: 'muted' }, r.base.toLowerCase() === t.toLowerCase() ? 'Verbo all\'infinito.' : `È un verbo: lo salvo come "${r.base}"${r.baseIt ? ' = ' + r.baseIt : ''}.`),
+              r.base.toLowerCase() !== t.toLowerCase()
+                ? h('button', { class: 'btn piccolo', type: 'button', onclick: () => { en.value = t; it.value = r.traduzione; } }, 'Tieni la forma del testo')
+                : null)
+            : r.base && r.base.toLowerCase() !== t.toLowerCase()
             ? h('div', { class: 'row', style: { marginTop: '4px' } }, h('span', { class: 'muted' }, `Forma base: ${r.base}`),
-              h('button', { class: 'btn piccolo', type: 'button', onclick: () => { en.value = r.base; if (espr && espr.base && espr.base.toLowerCase() === r.base.toLowerCase() && espr.traduzione) it.value = espr.traduzione; } }, 'Usa questa'))
+              h('button', { class: 'btn piccolo', type: 'button', onclick: () => { en.value = r.base; if (r.baseIt) it.value = r.baseIt; } }, 'Usa questa'))
             : null,
           r.nota ? h('div', { class: 'muted', style: { marginTop: '4px' } }, r.nota) : null);
         if (r.espressione && a === da) {

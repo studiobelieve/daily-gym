@@ -46,7 +46,12 @@ function modulo(tipo, carta, chiudi) {
         const r = await api.post('/api/traduci', { testo: fronte.value.trim(), frase: nota.value.trim() });
         retro.value = r.traduzione;
         msg.textContent = r.esistente ? `Hai già una carta per "${r.esistente.fronte}".` : '';
-        if (r.base && r.base.toLowerCase() !== fronte.value.trim().toLowerCase()) msg.textContent += ` Forma base: ${r.base}.`;
+        if (/^to\s+\S/i.test(r.base || '')) {
+          // Verbo: sempre "to + infinito".
+          if (r.base.toLowerCase() !== fronte.value.trim().toLowerCase()) msg.textContent += ` Verbo: salvato come "${r.base}".`;
+          fronte.value = r.base;
+          if (r.baseIt) retro.value = r.baseIt;
+        } else if (r.base && r.base.toLowerCase() !== fronte.value.trim().toLowerCase()) msg.textContent += ` Forma base: ${r.base}.`;
       } catch (err) { msg.textContent = err.message; }
       traduci.disabled = false;
       traduci.textContent = 'Traduci';
