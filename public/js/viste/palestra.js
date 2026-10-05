@@ -15,7 +15,7 @@ const GRUPPI = [
     ['test', 'Rifai il test per ricalibrare il livello.'],
   ]],
   ['Memoria', 'memoria', [
-    ['nomi', 'Volti e nomi con il metodo dell\'associazione.'],
+    ['focus', 'Concentrazione: conta i respiri, "non premere il 3", colori. Il primo è quello con più prove scientifiche.'],
     ['palazzo', 'Liste di oggetti nei luoghi del tuo percorso.'],
     ['span', 'Il termometro della memoria di lavoro.'],
   ]],
@@ -45,7 +45,7 @@ export async function mostra(box, { vai }) {
       }))))),
     h('div', { class: 'sezione' }, h('h2', 'Ripasso per tipo'),
       h('div', { class: 'segmenti' },
-        [['en', 'Solo inglese'], ['persona', 'Solo persone'], ['ricorda', 'Solo "da ricordare"']].map(([t, n]) =>
+        [['en', 'Solo inglese'], ['ricorda', 'Solo "da ricordare"']].map(([t, n]) =>
           h('button', { onclick: () => vai('esercizio/ripasso/' + t) }, n)))),
     stato.ai ? h('div', { class: 'sezione' }, h('h2', 'Scenari di speaking'),
       h('div', { class: 'card' }, h('ul', { class: 'lista' }, SCENARI.map((s) => h('li', { class: 'row' },

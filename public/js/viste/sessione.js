@@ -11,7 +11,7 @@ import { fermaAudio } from '../voce.js';
 const MODULI = {
   test: () => import('../esercizi/test.js'),
   ripasso: () => import('../esercizi/ripasso.js'),
-  nomi: () => import('../esercizi/nomi.js'),
+  focus: () => import('../esercizi/focus.js'),
   palazzo: () => import('../esercizi/palazzo.js'),
   span: () => import('../esercizi/span.js'),
   cultura: () => import('../esercizi/cultura.js'),

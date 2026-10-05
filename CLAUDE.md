@@ -93,3 +93,5 @@ Prima di ogni push: `npm test` e `node --check` su ogni file .js.
 - Conversazione vocale in tempo reale (oggi è "premi per parlare").
 - Foto vere per l'allenamento nomi (oggi i volti sono disegnati).
 - Notifica/promemoria giornaliero.
+
+- **Focus** (`esercizi/focus.js`) ha sostituito l'allenamento nomi (rimosso su richiesta): respiro contato (più evidenze), SART, Stroop. Le attività vecchie di tipo `nomi` restano nel DB ma non si creano più.

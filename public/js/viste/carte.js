@@ -22,7 +22,7 @@ export function apriAggiungi(tipoIniziale = 'en', carta = null) {
     return h('div', { class: 'stack' },
       h('div', { class: 'row between' }, h('h2', { style: { margin: 0 } }, carta ? 'Modifica carta' : 'Nuova carta'),
         h('button', { class: 'icona-btn', 'aria-label': 'Chiudi', onclick: chiudi }, icona('chiudi'))),
-      carta ? null : segmenti([['en', 'Inglese'], ['persona', 'Persona'], ['ricorda', 'Da ricordare'], ['cultura', 'Cultura']], tipo, (v) => { tipo = v; disegna(); }),
+      carta ? null : segmenti([['en', 'Inglese'], ['ricorda', 'Da ricordare'], ['cultura', 'Cultura']], tipo, (v) => { tipo = v; disegna(); }),
       corpo);
   });
 }
@@ -169,7 +169,7 @@ export async function mostra(box) {
     h('div', { class: 'row between' }, h('h1', { style: { margin: 0 } }, 'Carte'),
       h('button', { class: 'btn piccolo primario', onclick: () => apriAggiungi(filtro || 'en') }, '+ Nuova')),
     h('div', { class: 'stack', style: { marginTop: '12px' } },
-      segmenti([['', 'Tutte'], ['en', 'Inglese'], ['persona', 'Persone'], ['ricorda', 'Da ricordare'], ['cultura', 'Cultura']], filtro, (v) => { filtro = v; carica(); }),
+      segmenti([['', 'Tutte'], ['en', 'Inglese'], ['ricorda', 'Da ricordare'], ['cultura', 'Cultura']], filtro, (v) => { filtro = v; carica(); }),
       input,
       lista));
   carica();

@@ -1,7 +1,7 @@
 // Piano della sessione del giorno: cosa fare oggi, in che ordine. Funzione pura (testata).
 //
 //              Sessione corta (~10')          Completa (~20') aggiunge
-// Lun / Gio    Ripasso + Allenamento nomi     Speaking
+// Lun / Gio    Ripasso + Focus                Speaking
 // Mar / Ven    Ripasso + Pillola di cultura   Writing
 // Mer / Sab    Ripasso + Palazzo memoria      Speaking sulla pillola
 // Domenica     Ripasso + Digit span           Dettato + Riepilogo settimanale
@@ -10,7 +10,7 @@ import { giornoSettimana } from './testo.js';
 export const ESERCIZI = {
   test: { nome: 'Test di livello', area: 'inglese', minuti: 8, ai: false },
   ripasso: { nome: 'Ripasso carte', area: 'costanza', minuti: 6, ai: false },
-  nomi: { nome: 'Allenamento nomi', area: 'memoria', minuti: 4, ai: false },
+  focus: { nome: 'Focus e concentrazione', area: 'memoria', minuti: 3, ai: false },
   palazzo: { nome: 'Palazzo della memoria', area: 'memoria', minuti: 5, ai: false },
   span: { nome: 'Digit span', area: 'memoria', minuti: 2, ai: false },
   cultura: { nome: 'Pillola di cultura', area: 'cultura', minuti: 4, ai: true },
@@ -24,12 +24,12 @@ export const ESERCIZI = {
 };
 
 // Se l'AI non è configurata, gli esercizi AI vengono sostituiti da esercizi offline.
-const SOSTITUTI = { cultura: 'palazzo', writing: 'span', dettato: 'span', speaking: 'nomi', lacune: 'difficili', richiamo: 'nomi' };
+const SOSTITUTI = { cultura: 'palazzo', writing: 'span', dettato: 'span', speaking: 'focus', lacune: 'difficili', richiamo: 'focus' };
 
 export function pianoDelGiorno(giorno, tipo, { ai = true, testFatto = true, lacune = 0 } = {}) {
   const g = giornoSettimana(giorno);
   let base, extra;
-  if (g === 1 || g === 4) { base = ['ripasso', 'nomi']; extra = [{ id: 'speaking' }]; }
+  if (g === 1 || g === 4) { base = ['ripasso', 'focus']; extra = [{ id: 'speaking' }]; }
   else if (g === 2 || g === 5) { base = ['ripasso', 'cultura']; extra = [{ id: 'writing' }]; }
   else if (g === 3 || g === 6) { base = ['ripasso', 'palazzo']; extra = [{ id: 'speaking', scenario: 'pillola' }]; }
   else { base = ['ripasso', 'span']; extra = [{ id: 'dettato' }, { id: 'riepilogo' }]; }
@@ -58,7 +58,7 @@ export function minutiTotali(passi) {
 //   ce ne sono in scadenza): allena anche l'inglese.
 // - Gli altri girano in modo EQUO su tutti gli esercizi della Palestra: si sceglie tra quelli fatti
 //   meno volte in questo allenamento, evitando la stessa area di fila; a parità pesa il punto debole.
-export const ROTAZIONE = ['ripasso', 'nomi', 'writing', 'palazzo', 'dettato', 'span', 'speaking', 'lacune', 'difficili'];
+export const ROTAZIONE = ['ripasso', 'focus', 'writing', 'palazzo', 'dettato', 'span', 'speaking', 'lacune', 'difficili'];
 const CULTURA = ['cultura', 'richiamo'];
 
 export function prossimoEsercizio(stato, fatti = [], rng = Math.random, oggi = null) {

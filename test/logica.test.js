@@ -112,8 +112,8 @@ test('Obiettivi: percentuale, ritmo atteso e stati', () => {
 
 test('Piano del giorno: rotazione settimanale, test iniziale, senza AI', () => {
   const ids = (g, t, o) => pianoDelGiorno(g, t, o).map((p) => p.id);
-  assert.deepEqual(ids(OGGI, 'corta'), ['ripasso', 'nomi']); // giovedì
-  assert.deepEqual(ids(OGGI, 'completa'), ['ripasso', 'nomi', 'speaking']);
+  assert.deepEqual(ids(OGGI, 'corta'), ['ripasso', 'focus']); // giovedì
+  assert.deepEqual(ids(OGGI, 'completa'), ['ripasso', 'focus', 'speaking']);
   assert.deepEqual(ids('2026-10-02', 'completa'), ['ripasso', 'cultura', 'writing']); // venerdì
   assert.deepEqual(ids('2026-10-04', 'completa'), ['ripasso', 'span', 'dettato', 'riepilogo']); // domenica
   assert.equal(pianoDelGiorno('2026-10-03', 'completa')[2].scenario, 'pillola'); // sabato
@@ -161,11 +161,11 @@ test('Allenamento infinito: cultura ogni 2, tutti gli esercizi a rotazione equa'
   for (let k = 1; k < fatti.length; k++) assert.notEqual(fatti[k], fatti[k - 1], 'mai lo stesso esercizio due volte di fila');
   // Gli altri 18 posti: tutti i 9 esercizi della rotazione, 2 volte ciascuno.
   const altri = fatti.filter((_, k) => k % 2 === 0);
-  for (const id of ['ripasso', 'nomi', 'writing', 'palazzo', 'dettato', 'span', 'speaking', 'lacune', 'difficili']) {
+  for (const id of ['ripasso', 'focus', 'writing', 'palazzo', 'dettato', 'span', 'speaking', 'lacune', 'difficili']) {
     assert.equal(altri.filter((x) => x === id).length, 2, id + ' in ' + altri.join(','));
   }
   // Mai due esercizi della stessa area di fila (tra quelli non di cultura) quando c'è alternativa.
-  const area = { ripasso: 'c', difficili: 'c', nomi: 'm', palazzo: 'm', span: 'm', writing: 'i', dettato: 'i', speaking: 'i', lacune: 'i' };
+  const area = { ripasso: 'c', difficili: 'c', focus: 'm', palazzo: 'm', span: 'm', writing: 'i', dettato: 'i', speaking: 'i', lacune: 'i' };
   let stesse = 0;
   for (let k = 1; k < altri.length; k++) if (area[altri[k]] === area[altri[k - 1]]) stesse++;
   assert.ok(stesse <= 3, altri.join(','));

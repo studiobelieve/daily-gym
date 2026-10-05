@@ -9,7 +9,7 @@ Si usa dal telefono e dal computer con gli stessi dati.
 
 | Giorno | Corta | La completa aggiunge |
 |---|---|---|
-| Lun / Gio | Ripasso carte + Allenamento nomi | Speaking |
+| Lun / Gio | Ripasso carte + Focus e concentrazione | Speaking |
 | Mar / Ven | Ripasso carte + Pillola di cultura | Writing |
 | Mer / Sab | Ripasso carte + Palazzo della memoria | Speaking sulla pillola |
 | Domenica | Ripasso carte + Digit span | Dettato + Riepilogo settimanale |
@@ -40,7 +40,7 @@ Tutto è collegato: gli errori dello speaking diventano lacune, le lacune divent
 
 **Memoria**
 - *Ripetizione dilazionata*: le carte tornano appena prima che tu le dimentichi. Ci sono 4 tipi: parole inglesi, persone vere, cose da ricordare, nozioni di cultura.
-- *Allenamento nomi*: volti disegnati con tratti distintivi, nome, lavoro e città. Usi il metodo dell'associazione, poi una pausa che distrae, poi il richiamo. Il numero di persone cresce quando vai bene.
+- *Focus e concentrazione*: tre esercizi a rotazione. **Conta i respiri** (3 min: tocchi a ogni espirazione e segni la nona, senza vedere il numero; è la pratica con più prove, riduce la mente che vaga). **Non premere il 3** (il test SART: misura i momenti di "pilota automatico"). **Colori** (Stroop: attenzione selettiva). Il respiro esce più spesso. Nota onesta: i giochi di allenamento cerebrale migliorano soprattutto il gioco stesso, il trasferimento alla vita reale è dimostrato meglio per la pratica dell'attenzione sul respiro.
 - *Palazzo della memoria*: liste di oggetti da mettere nei luoghi di casa tua. Gli oggetti possono essere anche in inglese.
 - *Digit span*: il termometro della memoria di lavoro.
 

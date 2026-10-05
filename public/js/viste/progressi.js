@@ -57,8 +57,8 @@ export async function mostra(box) {
         linea(perGiorno(att, 'span', 'valore', 'max'), { colore: 'var(--memoria)', unita: ' cifre', min: 3 })),
       blocco('Palazzo della memoria', 'Oggetti ritrovati per sessione.',
         linea(perGiorno(att.map((a) => (a.tipo === 'palazzo' ? { ...a, ritrovati: Math.round((a.valore * a.punteggio) / 100) } : a)), 'palazzo', 'ritrovati', 'max'), { colore: 'var(--memoria)', unita: ' oggetti', min: 0 })),
-      blocco('Precisione sui nomi', 'Percentuale di nomi ricordati nell\'allenamento.',
-        linea(perGiorno(att, 'nomi'), { colore: 'var(--memoria)', unita: '%', min: 0, max: 100 })),
+      blocco('Focus e concentrazione', 'Punteggio degli esercizi di concentrazione (respiro, "non premere il 3", colori).',
+        linea(perGiorno(att, 'focus'), { colore: 'var(--memoria)', unita: '%', min: 0, max: 100 })),
       blocco('Persone reali', null, h('p', { style: { margin: 0 } }, `${(totCarte.persona || {}).totali || 0} in studio, ${(totCarte.persona || {}).mature || 0} consolidate (ricordi il nome a 3+ settimane di distanza).`)),
     ],
     inglese: () => [

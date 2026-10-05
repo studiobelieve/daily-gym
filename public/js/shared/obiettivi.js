@@ -32,13 +32,9 @@ export const METRICHE = {
     nome: 'Record palazzo della memoria', area: 'memoria', unita: 'oggetti',
     descrizione: 'Il numero più alto di oggetti ricordati tutti, in ordine.',
   },
-  nomi_precisione: {
-    nome: 'Precisione sui nomi', area: 'memoria', unita: '%',
-    descrizione: 'Media delle ultime 5 sessioni di allenamento nomi.',
-  },
-  persone_memorizzate: {
-    nome: 'Persone reali memorizzate', area: 'memoria', unita: 'persone',
-    descrizione: 'Persone vere il cui nome ricordi da almeno una settimana.',
+  focus_precisione: {
+    nome: 'Punteggio focus', area: 'memoria', unita: '%',
+    descrizione: 'Media delle ultime 5 sessioni di focus e concentrazione.',
   },
   pillole: {
     nome: 'Pillole di cultura completate', area: 'cultura', unita: 'pillole',
@@ -118,8 +114,7 @@ export function suggerimenti(valori, oggi, aggiungi) {
     { metrica: 'serie', titolo: '30 giorni di fila', target: 30, scadenza: tra(35) },
     { metrica: 'span_record', titolo: `Ricordare ${Math.max(7, v('span_record') + 2)} cifre`, target: Math.max(7, v('span_record') + 2), scadenza: tra(56) },
     { metrica: 'palazzo_record', titolo: `Palazzo della memoria: ${Math.max(10, v('palazzo_record') + 5)} oggetti`, target: Math.max(10, v('palazzo_record') + 5), scadenza: tra(42) },
-    { metrica: 'nomi_precisione', titolo: 'Nomi: 90% di precisione', target: 90, scadenza: tra(42) },
-    { metrica: 'persone_memorizzate', titolo: `Memorizzare ${v('persone_memorizzate') + 20} persone reali`, target: v('persone_memorizzate') + 20, scadenza: tra(60) },
+    { metrica: 'focus_precisione', titolo: 'Focus: 85% di media', target: 85, scadenza: tra(42) },
     { metrica: 'parole_mature', titolo: `${v('parole_mature') + 150} parole inglesi consolidate`, target: v('parole_mature') + 150, scadenza: tra(90) },
     { metrica: 'livello_inglese', titolo: `Arrivare a ${livelloDaIndice(v('livello_inglese') + 2)}`, target: Math.min(9, v('livello_inglese') + 2), scadenza: tra(120) },
     { metrica: 'speaking_minuti', titolo: '120 minuti di speaking', target: v('speaking_minuti') + 120, scadenza: tra(60) },
