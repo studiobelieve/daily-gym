@@ -8,6 +8,7 @@ import { creaPercorso } from '../esercizi/palazzo.js';
 
 const GRUPPI = [
   ['Inglese', 'inglese', [
+    ['grammatica', 'Spiegazione e poi esercizi, dal tuo livello in su: sali quando consolidi.'],
     ['writing', 'Scrivi un breve testo, l\'AI lo corregge e spiega gli errori.'],
     ['dettato', 'Ascolta frasi e scrivile: orecchio e ortografia.'],
     ['speaking', 'Conversazione a voce con Emma, la tua insegnante: ti corregge e propone lei gli argomenti, senza fine.'],
@@ -51,6 +52,8 @@ export async function mostra(box, { vai }) {
       h('div', { class: 'card' }, h('ul', { class: 'lista' }, SCENARI.map((s) => h('li', { class: 'row' },
         h('div', { class: 'grow' }, h('strong', s.titolo), h('div', { class: 'tiny muted' }, s.obiettivo)),
         h('button', { class: 'btn piccolo', onclick: () => vai('esercizio/speaking/' + s.id) }, 'Parla')))))) : null,
+    h('div', { class: 'sezione' }, h('h2', 'Percorso di grammatica'),
+      h('button', { class: 'btn pieno', onclick: () => vai('grammatica') }, 'Tutti gli argomenti per livello')),
     h('div', { class: 'sezione' }, h('h2', 'Archivio pillole'),
       h('button', { class: 'btn pieno', onclick: () => vai('pillole') }, 'Tutte le pillole lette')),
     h('div', { class: 'sezione' }, h('h2', 'I tuoi percorsi (palazzo della memoria)'), percorsiBox));

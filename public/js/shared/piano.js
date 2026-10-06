@@ -21,10 +21,11 @@ export const ESERCIZI = {
   lacune: { nome: 'Lavoro sulle lacune', area: 'inglese', minuti: 5, ai: true },
   difficili: { nome: 'Carte difficili', area: 'costanza', minuti: 3, ai: false },
   richiamo: { nome: 'Ti ricordi? (cultura)', area: 'cultura', minuti: 3, ai: true },
+  grammatica: { nome: 'Grammatica', area: 'inglese', minuti: 7, ai: true },
 };
 
 // Se l'AI non è configurata, gli esercizi AI vengono sostituiti da esercizi offline.
-const SOSTITUTI = { cultura: 'palazzo', writing: 'span', dettato: 'span', speaking: 'focus', lacune: 'difficili', richiamo: 'focus' };
+const SOSTITUTI = { cultura: 'palazzo', writing: 'span', dettato: 'span', speaking: 'focus', lacune: 'difficili', richiamo: 'focus', grammatica: 'span' };
 
 export function pianoDelGiorno(giorno, tipo, { ai = true, testFatto = true, lacune = 0 } = {}) {
   const g = giornoSettimana(giorno);
@@ -58,7 +59,7 @@ export function minutiTotali(passi) {
 //   ce ne sono in scadenza): allena anche l'inglese.
 // - Gli altri girano in modo EQUO su tutti gli esercizi della Palestra: si sceglie tra quelli fatti
 //   meno volte in questo allenamento, evitando la stessa area di fila; a parità pesa il punto debole.
-export const ROTAZIONE = ['ripasso', 'focus', 'writing', 'palazzo', 'dettato', 'span', 'speaking', 'lacune', 'difficili'];
+export const ROTAZIONE = ['ripasso', 'focus', 'grammatica', 'palazzo', 'writing', 'span', 'dettato', 'speaking', 'lacune', 'difficili'];
 const CULTURA = ['cultura', 'richiamo'];
 
 export function prossimoEsercizio(stato, fatti = [], rng = Math.random, oggi = null) {
@@ -94,6 +95,12 @@ export function prossimoEsercizio(stato, fatti = [], rng = Math.random, oggi = n
   const areaUltima = ultimo && ESERCIZI[ultimo] ? ESERCIZI[ultimo].area : null;
   const altraArea = scelta.filter((id) => ESERCIZI[id].area !== areaUltima);
   if (altraArea.length) scelta = altraArea;
+  // Tra le aree possibili, quella con più esercizi ancora da fare nel giro: così le aree si alternano
+  // in modo regolare e a fine giro non restano tre esercizi della stessa area di fila.
+  const perArea = {};
+  for (const id of scelta) perArea[ESERCIZI[id].area] = (perArea[ESERCIZI[id].area] || 0) + 1;
+  const piuPiena = Math.max(...Object.values(perArea));
+  scelta = scelta.filter((id) => perArea[ESERCIZI[id].area] === piuPiena);
   // A parità: più spesso ciò in cui vai peggio o che non fai da tempo.
   const peso = (id) => {
     const m = (stato.medie || {})[id];

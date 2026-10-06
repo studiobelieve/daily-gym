@@ -95,3 +95,5 @@ Prima di ogni push: `npm test` e `node --check` su ogni file .js.
 - Notifica/promemoria giornaliero.
 
 - **Focus** (`esercizi/focus.js`) ha sostituito l'allenamento nomi (rimosso su richiesta): respiro contato (più evidenze), SART, Stroop. Le attività vecchie di tipo `nomi` restano nel DB ma non si creano più.
+- **Carte uniche**: indice `carte_uniche` su (tipo, chiave_carta(fronte)); `creaCarta` usa ON CONFLICT DO NOTHING e restituisce null se esiste già (POST /api/carte → 409, multi → `saltate`).
+- **Grammatica** (`lib/grammatica.js`): PROGRAMMA per livello; lezione salvata in `grammatica_lezioni`, avanzamento in `grammatica`; consolidato = ≥80% in 2 giorni diversi; livello in impostazione `grammatica_livello`, sale con l'80% consolidato.

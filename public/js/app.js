@@ -31,6 +31,7 @@ const VISTE = {
   sessione: () => import('./viste/sessione.js'),
   esercizio: () => import('./viste/sessione.js'),
   pillole: () => import('./viste/pillole.js'),
+  grammatica: () => import('./viste/grammatica.js'),
 };
 
 let main, nav, fab;

@@ -155,24 +155,24 @@ test('Allenamento infinito: cultura ogni 2, tutti gli esercizi a rotazione equa'
   assert.equal(prossimoEsercizio(stato, [], () => 0, '2026-10-02').id, 'ripasso');
   assert.equal(prossimoEsercizio(stato, [], () => 0, '2026-10-02').limite, 15);
   const fatti = [];
-  for (let k = 0; k < 36; k++) fatti.push(prossimoEsercizio(stato, fatti, Math.random, '2026-10-02').id);
+  for (let k = 0; k < 40; k++) fatti.push(prossimoEsercizio(stato, fatti, Math.random, '2026-10-02').id);
   for (let k = 1; k < fatti.length; k += 2) assert.ok(['cultura', 'richiamo'].includes(fatti[k]), 'cultura ogni 2: ' + fatti.join(','));
   assert.ok(fatti.includes('richiamo') && fatti.includes('cultura'));
   for (let k = 1; k < fatti.length; k++) assert.notEqual(fatti[k], fatti[k - 1], 'mai lo stesso esercizio due volte di fila');
-  // Gli altri 18 posti: tutti i 9 esercizi della rotazione, 2 volte ciascuno.
+  // Gli altri 20 posti: tutti i 10 esercizi della rotazione, 2 volte ciascuno.
   const altri = fatti.filter((_, k) => k % 2 === 0);
-  for (const id of ['ripasso', 'focus', 'writing', 'palazzo', 'dettato', 'span', 'speaking', 'lacune', 'difficili']) {
+  for (const id of ['ripasso', 'focus', 'grammatica', 'writing', 'palazzo', 'dettato', 'span', 'speaking', 'lacune', 'difficili']) {
     assert.equal(altri.filter((x) => x === id).length, 2, id + ' in ' + altri.join(','));
   }
   // Mai due esercizi della stessa area di fila (tra quelli non di cultura) quando c'è alternativa.
-  const area = { ripasso: 'c', difficili: 'c', focus: 'm', palazzo: 'm', span: 'm', writing: 'i', dettato: 'i', speaking: 'i', lacune: 'i' };
+  const area = { ripasso: 'c', difficili: 'c', grammatica: 'i', focus: 'm', palazzo: 'm', span: 'm', writing: 'i', dettato: 'i', speaking: 'i', lacune: 'i' };
   let stesse = 0;
   for (let k = 1; k < altri.length; k++) if (area[altri[k]] === area[altri[k - 1]]) stesse++;
-  assert.ok(stesse <= 3, altri.join(','));
+  assert.ok(stesse <= 1, altri.join(','));
   // Senza AI: niente esercizi AI, niente cultura.
   const senza = [];
   for (let k = 0; k < 20; k++) senza.push(prossimoEsercizio({ ...stato, ai: false }, senza, Math.random).id);
-  assert.ok(!senza.some((id) => ['cultura', 'richiamo', 'writing', 'dettato', 'speaking', 'lacune'].includes(id)), senza.join(','));
+  assert.ok(!senza.some((id) => ['cultura', 'richiamo', 'writing', 'dettato', 'speaking', 'lacune', 'grammatica'].includes(id)), senza.join(','));
   // Senza carte, lacune o testi da richiamare: non escono ripasso, lacune, difficili, richiamo.
   const vuoto = [];
   for (let k = 0; k < 20; k++) vuoto.push(prossimoEsercizio({ ai: true, daRipassare: 0, lacune: 0, difficili: 0, richiamo: 0 }, vuoto, Math.random).id);
@@ -244,4 +244,19 @@ test('Obiettivo settimanale: lunedì della settimana e ore/minuti', async () => 
   assert.equal(oreMinuti(120), '2 h');
   assert.equal(oreMinuti(47), '47 min');
   assert.equal(oreMinuti(95), '1 h 35 min');
+});
+
+test('Grammatica: livello di partenza, prossimo argomento, consolidamento', async () => {
+  const g = await import('../lib/grammatica.js');
+  assert.equal(g.livelloGrammaticaDa('A2+'), 'A2');
+  assert.equal(g.livelloGrammaticaDa('B1+'), 'B1');
+  assert.equal(g.livelloGrammaticaDa('C2'), 'C1');
+  const ids = new Set(Object.keys(g.ARGOMENTI));
+  assert.equal(ids.size, Object.values(g.PROGRAMMA).flat().length, 'id unici');
+  assert.deepEqual(g.prossimoArgomento('B1', {}), { id: 'pp-vs-past', ripasso: false });
+  assert.deepEqual(g.prossimoArgomento('B1', { 'pp-vs-past': { consolidato: '2026-10-01' } }).id, 'for-since');
+  const tutti = Object.fromEntries(g.PROGRAMMA.B1.slice(0, 10).map((x) => [x.id, { consolidato: '2026-09-01', ultimo: '2026-09-01' }]));
+  assert.ok(g.quotaConsolidata('B1', tutti) >= g.QUOTA_LIVELLO);
+  // ogni 4 sessioni, ripasso di un argomento consolidato da più di 14 giorni
+  assert.deepEqual(g.prossimoArgomento('B1', tutti, { oggi: '2026-10-06', sessioni: 3 }).ripasso, true);
 });

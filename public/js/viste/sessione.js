@@ -12,6 +12,7 @@ const MODULI = {
   test: () => import('../esercizi/test.js'),
   ripasso: () => import('../esercizi/ripasso.js'),
   focus: () => import('../esercizi/focus.js'),
+  grammatica: () => import('../esercizi/grammatica.js'),
   palazzo: () => import('../esercizi/palazzo.js'),
   span: () => import('../esercizi/span.js'),
   cultura: () => import('../esercizi/cultura.js'),
@@ -69,6 +70,7 @@ async function singolo(box, [id, param], vai) {
   const opz = {};
   if (id === 'speaking' && param) opz.scenario = param;
   if (id === 'ripasso' && param) opz.tipo = param;
+  if (id === 'grammatica' && param) opz.argomento = param;
   const p = { id, ...ESERCIZI[id], ...opz };
   const esito = await eseguiPasso(box, p, { indice: 0, passi: [p], vai, g: oggi(), singolo: true, attuale: () => true });
   if (esito === 'esci') return;

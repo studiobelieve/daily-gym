@@ -109,7 +109,7 @@ function modulo(tipo, carta, chiudi) {
           if (!carte.length) return;
           try {
             const r = await api.post('/api/carte/multi', { carte });
-            toast(`${r.ids.length} carte aggiunte`);
+            toast(`${r.ids.length} carte aggiunte${r.saltate ? ` · ${r.saltate} già presenti, saltate` : ''}`);
             if (ricarica) ricarica();
             chiudi();
           } catch (err) { msg.textContent = err.message; }

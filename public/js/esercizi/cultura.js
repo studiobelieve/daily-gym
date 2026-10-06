@@ -70,9 +70,14 @@ export async function mostraPillola(box, p, opz = {}) {
       h('ul', { class: 'lista small' }, glossario.map((g) => {
         const b = h('button', { class: 'btn piccolo', onclick: async () => {
           b.disabled = true;
-          await api.post('/api/carte', { tipo: 'en', fronte: g.en, retro: g.it, nota: `Da: ${p.titolo}` });
+          try {
+            await api.post('/api/carte', { tipo: 'en', fronte: g.en, retro: g.it, nota: `Da: ${p.titolo}` });
+            toast('Aggiunta alle carte');
+          } catch (err) {
+            if (err.status !== 409) { b.disabled = false; throw err; }
+            toast('Ce l\'hai già nelle carte');
+          }
           b.textContent = '✓';
-          toast('Aggiunta alle carte');
         } }, '+ carta');
         return h('li', { class: 'row between' }, h('span', { class: 'grow' }, h('strong', g.en), ' — ', g.it), b);
       }))) : null,

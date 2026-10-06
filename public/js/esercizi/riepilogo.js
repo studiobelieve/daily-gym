@@ -2,7 +2,7 @@
 import { h, svuota, caricamento, dataBreve } from '../ui.js';
 import { api } from '../api.js';
 
-const NOMI = { span: 'Digit span (cifre)', palazzo: 'Palazzo (oggetti)', focus: 'Focus (%)', writing: 'Writing (voto)', dettato: 'Dettato (%)', speaking: 'Speaking (voto)', cultura: 'Quiz cultura (%)' };
+const NOMI = { span: 'Digit span (cifre)', palazzo: 'Palazzo (oggetti)', focus: 'Focus (%)', grammatica: 'Grammatica (%)', writing: 'Writing (voto)', dettato: 'Dettato (%)', speaking: 'Speaking (voto)', cultura: 'Quiz cultura (%)' };
 
 export async function vistaRiepilogo(r) {
   const riga = (nome, ora, prima, unita = '') => {

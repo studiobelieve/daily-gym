@@ -53,6 +53,15 @@ function apri(span) {
     const salva = h('button', { class: 'btn primario pieno', type: 'submit' }, '+ Aggiungi alle carte');
     let richiesta = 0;
     let espr = null; // espressione proposta (es. "fell apart"), per il significato nella forma base
+    // Niente doppioni: se la parola è già nelle carte, il salvataggio si blocca.
+    let esistente = null;
+    const chiave = (x) => String(x || '').toLowerCase().trim().replace(/[\s.!?]+$/, '').replace(/\s+/g, ' ');
+    const controllaDoppia = () => {
+      const doppia = esistente && chiave(en.value) === chiave(esistente);
+      salva.disabled = Boolean(doppia);
+      msg.textContent = doppia ? `✓ "${esistente}" è già nelle tue carte.` : '';
+    };
+    en.addEventListener('input', () => { esistente = null; controllaDoppia(); });
 
     const selezione = () => parole.slice(da, a + 1).map((p) => p.textContent).join(' ');
     const aggiorna = async () => {
@@ -62,6 +71,8 @@ function apri(span) {
       en.value = t;
       it.value = '';
       msg.textContent = '';
+      esistente = null;
+      salva.disabled = false;
       svuota(info, h('span', { class: 'muted' }, 'Traduco…'));
       const mio = ++richiesta;
       const chiave = t + '|' + frase;
@@ -82,11 +93,11 @@ function apri(span) {
             ? h('div', { class: 'row', style: { marginTop: '4px' } },
               h('span', { class: 'muted' }, r.base.toLowerCase() === t.toLowerCase() ? 'Verbo all\'infinito.' : `È un verbo: lo salvo come "${r.base}"${r.baseIt ? ' = ' + r.baseIt : ''}.`),
               r.base.toLowerCase() !== t.toLowerCase()
-                ? h('button', { class: 'btn piccolo', type: 'button', onclick: () => { en.value = t; it.value = r.traduzione; } }, 'Tieni la forma del testo')
+                ? h('button', { class: 'btn piccolo', type: 'button', onclick: () => { en.value = t; it.value = r.traduzione; controllaDoppia(); } }, 'Tieni la forma del testo')
                 : null)
             : r.base && r.base.toLowerCase() !== t.toLowerCase()
             ? h('div', { class: 'row', style: { marginTop: '4px' } }, h('span', { class: 'muted' }, `Forma base: ${r.base}`),
-              h('button', { class: 'btn piccolo', type: 'button', onclick: () => { en.value = r.base; if (r.baseIt) it.value = r.baseIt; } }, 'Usa questa'))
+              h('button', { class: 'btn piccolo', type: 'button', onclick: () => { en.value = r.base; if (r.baseIt) it.value = r.baseIt; controllaDoppia(); } }, 'Usa questa'))
             : null,
           r.nota ? h('div', { class: 'muted', style: { marginTop: '4px' } }, r.nota) : null);
         if (r.espressione && a === da) {
@@ -99,7 +110,8 @@ function apri(span) {
               h('button', { class: 'btn primario piccolo', type: 'button', onclick: () => { espr = r.espressione; [da, a] = range; ridisegnaComandi(); aggiorna(); } }, 'Usa l\'espressione intera')));
           }
         }
-        if (r.esistente) msg.textContent = `Hai già una carta per "${r.esistente.fronte}". Puoi aggiungerla comunque.`;
+        esistente = r.esistente ? r.esistente.fronte : null;
+        controllaDoppia();
       } catch (err) {
         if (mio === richiesta) svuota(info, h('span', { class: 'muted' }, 'Traduzione non disponibile: scrivila tu. (' + err.message + ')'));
       }

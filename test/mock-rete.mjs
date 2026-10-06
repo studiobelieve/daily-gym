@@ -29,6 +29,24 @@ Hi Mark, I am writing to confirm our meeting next Tuesday. See you soon.
       `[DOMANDA] ${id} || What did the Romans build? || Roads and bridges || Pyramids || Skyscrapers`,
     ]).join('\n');
   }],
+  ['excellent English grammar teacher', () => `[TITOLO] Present perfect o past simple?
+[QUANDO] Il present perfect collega il passato al presente; il past simple parla di un momento finito.
+[REGOLA] Soggetto + have/has + participio passato
+[REGOLA] Con un tempo finito (yesterday, last week, in 2020) si usa il past simple
+[REGOLA] Con ever, never, just, already, yet si usa il present perfect
+[ESEMPIO] I have worked here since 2019. || Lavoro qui dal 2019.
+[ESEMPIO] I worked there in 2018. || Ho lavorato lì nel 2018.
+[ESEMPIO] Have you ever been to London? || Sei mai stato a Londra?
+[ERRORE_TIPICO] Yesterday I have seen Marco. || Yesterday I saw Marco. || Con "yesterday" il tempo è finito: past simple.
+[ERRORE_TIPICO] I live here since 2019. || I have lived here since 2019. || Con since serve il present perfect.
+[TRUCCO] Se puoi dire "quando?" con una data precisa, usa il past simple.`],
+  ['create grammar exercises', () => [
+    '[ITEM] scegli || Scegli la forma giusta || Yesterday I ___ Marco. || saw || Tempo finito: past simple. || saw | have seen',
+    '[ITEM] completa || Completa || I ___ (live) here since 2019. || have lived | \'ve lived || Since: present perfect. ||',
+    '[ITEM] correggi || Correggi l\'errore || I have finished it yesterday. || finished || Yesterday: past simple. ||',
+    '[ITEM] traduci || Traduci || Sei mai stato a Londra? || Have you ever been to London? || Esperienza: present perfect. ||',
+    '[ITEM] completa || Completa || She ___ (just / call) me. || has just called || Just: present perfect. ||',
+  ].join('\n')],
   ['teaches communication skills', () => `[TITOLO] Repeat Their Last Words
 [TESTO]
 Imagine a client says: "The price is too high for us." You answer only: "Too high?" Then you wait.

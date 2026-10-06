@@ -50,6 +50,10 @@ Tutto è collegato: gli errori dello speaking diventano lacune, le lacune divent
 
 **Obiettivo settimanale: 2 ore di esercizi.** In *Oggi* vedi quanto hai fatto da lunedì, quanto manca e quanti minuti al giorno servono per arrivarci. In *Progressi* c'è lo storico delle settimane. Conta solo il tempo passato davvero negli esercizi: ogni esercizio vale al massimo 1 ora, così un'app lasciata aperta non gonfia il conto. Nel ripasso conta il tempo su ogni carta, al massimo 2 minuti l'una. Il valore si cambia in *Impostazioni*.
 
+**Grammatica**: un percorso per livello (A1 → C1, 51 argomenti nell'ordine dei sillabi CEFR), che parte dal tuo livello. Ogni argomento ha prima la spiegazione in italiano (quando si usa, la regola, esempi toccabili, gli errori tipici di chi parla italiano, un trucco) e poi 8 esercizi nuovi ogni volta (scegli, completa, correggi, traduci). Un argomento è *consolidato* quando fai almeno l'80% in due giorni diversi; quando l'80% degli argomenti del livello è consolidato passi al successivo. Ogni 4 sessioni torna un argomento già consolidato per ripasso. Le risposte sbagliate entrano nelle lacune. Dalla Palestra: *Grammatica* (il prossimo argomento) o *Percorso di grammatica* (tutti gli argomenti con lo stato).
+
+**Carte senza doppioni**: la stessa parola non si può salvare due volte (maiuscole, spazi e punto finale non contano). Se tocchi una parola che hai già, il pannello te lo dice e non la salva.
+
 **Curiosità**: fatti strani ma veri (la Grande guerra degli emù, l'epidemia di ballo del 1518, l'alluvione di melassa di Boston…), da raccontare.
 
 **Tocca una parola che fa parte di un'espressione** (es. "fell" in "fell apart"): il pannello te lo dice e propone l'espressione intera, con la forma base ("to fall apart") e il significato ("andare in pezzi"). Puoi anche allargare a mano con "+ parola".
