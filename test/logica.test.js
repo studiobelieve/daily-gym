@@ -112,11 +112,13 @@ test('Obiettivi: percentuale, ritmo atteso e stati', () => {
 
 test('Piano del giorno: rotazione settimanale, test iniziale, senza AI', () => {
   const ids = (g, t, o) => pianoDelGiorno(g, t, o).map((p) => p.id);
-  assert.deepEqual(ids(OGGI, 'corta'), ['ripasso', 'focus']); // giovedì
-  assert.deepEqual(ids(OGGI, 'completa'), ['ripasso', 'focus', 'speaking']);
-  assert.deepEqual(ids('2026-10-02', 'completa'), ['ripasso', 'cultura', 'writing']); // venerdì
-  assert.deepEqual(ids('2026-10-04', 'completa'), ['ripasso', 'span', 'dettato', 'riepilogo']); // domenica
-  assert.equal(pianoDelGiorno('2026-10-03', 'completa')[2].scenario, 'pillola'); // sabato
+  assert.deepEqual(ids(OGGI, 'corta'), ['ripasso', 'focus']); // giovedì: niente grammatica nella corta
+  assert.deepEqual(ids(OGGI, 'completa'), ['ripasso', 'focus', 'grammatica', 'speaking']);
+  assert.deepEqual(ids('2026-10-02', 'corta'), ['ripasso', 'cultura', 'grammatica']); // venerdì: sì
+  assert.deepEqual(ids('2026-10-02', 'completa'), ['ripasso', 'cultura', 'grammatica', 'writing']);
+  assert.deepEqual(ids('2026-10-04', 'completa'), ['ripasso', 'span', 'grammatica', 'dettato', 'riepilogo']); // domenica
+  assert.equal(pianoDelGiorno('2026-10-03', 'completa')[3].scenario, 'pillola'); // sabato
+  assert.ok(!ids('2026-10-02', 'corta', { ai: false }).includes('grammatica'), 'senza AI la grammatica è sostituita');
   assert.equal(ids(OGGI, 'corta', { testFatto: false })[0], 'test');
   assert.ok(!ids('2026-10-02', 'completa', { ai: false }).some((id) => ['cultura', 'writing'].includes(id)));
   assert.equal(giornoSettimana('2026-10-04'), 0);

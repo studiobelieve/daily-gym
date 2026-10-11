@@ -23,7 +23,7 @@ export async function mostra(box, { vai }) {
   const heroBox = h('div');
   const cambia = (v) => { tipo = v; impostaDurata(v); disegnaHero(); };
   const scelta = () => h('div', { style: { marginTop: '10px' } },
-    segmenti([['corta', 'Corta · 10\''], ['completa', 'Completa · 20\''], ['infinita', 'Infinito ∞']], tipo, cambia));
+    segmenti([['corta', 'Corta'], ['completa', 'Completa'], ['infinita', 'Infinito ∞']], tipo, cambia));
   const disegnaHero = () => {
     if (tipo === 'infinita') {
       svuota(heroBox, h('div', { class: 'hero' },

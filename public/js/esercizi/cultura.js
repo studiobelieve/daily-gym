@@ -110,7 +110,8 @@ export async function mostraPillola(box, p, opz = {}) {
   const r = await api.post(`/api/pillole/${p.id}/completa`, { punteggio, durata: Math.round((Date.now() - inizio) / 1000) });
   await new Promise((ok) => svuota(box, h('div', { class: 'card stack center' },
     h('div', { class: 'voto-grande' }, `${giuste}/${p.domande.length}`),
-    daRicordare ? h('div', { class: 'card', style: { textAlign: 'left' } }, h('div', { class: 'tiny muted' }, 'Da ricordare'), h('p', { style: { margin: 0 } }, daRicordare)) : null,
+    daRicordare ? h('div', { class: 'card', style: { textAlign: 'left' } }, h('div', { class: 'tiny muted' }, 'Da ricordare'),
+      daRicordare.includes(' · ') ? h('ul', { style: { margin: '4px 0 0', paddingLeft: '20px' } }, daRicordare.split(' · ').map((x) => h('li', x.trim()))) : h('p', { style: { margin: 0 } }, daRicordare)) : null,
     h('p', { class: 'small muted' }, p.completata ? 'Quiz ripetuto.' : 'Domani iniziano le domande di "Ti ricordi?" su questo testo, a intervalli sempre più lunghi.'),
     giudizio(p),
     h('button', { class: 'btn primario pieno', onclick: ok }, 'Avanti'))));

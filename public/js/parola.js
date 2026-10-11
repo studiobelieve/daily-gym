@@ -55,7 +55,7 @@ function apri(span) {
     let espr = null; // espressione proposta (es. "fell apart"), per il significato nella forma base
     // Niente doppioni: se la parola è già nelle carte, il salvataggio si blocca.
     let esistente = null;
-    const chiave = (x) => String(x || '').toLowerCase().trim().replace(/[\s.!?]+$/, '').replace(/\s+/g, ' ');
+    const chiave = (x) => String(x || '').toLowerCase().trim().replace(/[\s.!?]+$/, '').replace(/\s+/g, ' ').replace(/^to /, '');
     const controllaDoppia = () => {
       const doppia = esistente && chiave(en.value) === chiave(esistente);
       salva.disabled = Boolean(doppia);

@@ -1,10 +1,11 @@
 // Piano della sessione del giorno: cosa fare oggi, in che ordine. Funzione pura (testata).
 //
-//              Sessione corta (~10')          Completa (~20') aggiunge
+//              Sessione corta                 Completa aggiunge
 // Lun / Gio    Ripasso + Focus                Speaking
 // Mar / Ven    Ripasso + Pillola di cultura   Writing
 // Mer / Sab    Ripasso + Palazzo memoria      Speaking sulla pillola
 // Domenica     Ripasso + Digit span           Dettato + Riepilogo settimanale
+// Grammatica: nella completa tutti i giorni, nella corta lunedì, mercoledì e venerdì.
 import { giornoSettimana } from './testo.js';
 
 export const ESERCIZI = {
@@ -36,6 +37,9 @@ export function pianoDelGiorno(giorno, tipo, { ai = true, testFatto = true, lacu
   else { base = ['ripasso', 'span']; extra = [{ id: 'dettato' }, { id: 'riepilogo' }]; }
 
   let passi = base.map((id) => ({ id }));
+  // Grammatica: ogni giorno nella completa; nella corta lunedì, mercoledì e venerdì (per consolidare
+  // un argomento servono due giorni diversi con l'80%).
+  if (tipo === 'completa' || [1, 3, 5].includes(g)) passi.push({ id: 'grammatica' });
   if (tipo === 'completa') passi = passi.concat(extra);
   // Errori ricorrenti da sistemare: la sessione completa li lavora ogni giorno.
   if (tipo === 'completa' && lacune >= 3) passi.splice(1, 0, { id: 'lacune' });
