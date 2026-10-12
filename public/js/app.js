@@ -63,6 +63,8 @@ function modalitaFocus(attiva) {
 
 let navigazione = 0;
 async function instrada() {
+  ricaricaSeServe();
+  controllaVersione();
   const [nome, ...resto] = (location.hash.replace(/^#\/?/, '') || 'oggi').split('/');
   const chiave = VISTE[nome] ? nome : 'oggi';
   const mio = ++navigazione;
@@ -103,6 +105,22 @@ function login(motivo) {
   setTimeout(() => pass.focus(), 50);
 }
 
+// Aggiornamento automatico: se sul server c'è una versione nuova, l'app si ricarica da sola
+// (mai durante un esercizio: aspetta di tornare su una schermata normale).
+let versioneCaricata = null, ultimoControllo = 0, daRicaricare = false;
+async function controllaVersione() {
+  if (!versioneCaricata || Date.now() - ultimoControllo < 20_000) return;
+  ultimoControllo = Date.now();
+  try {
+    const s = await fetch('/api/stato', { credentials: 'same-origin', cache: 'no-store' }).then((r) => r.json());
+    if (s.versione && s.versione !== versioneCaricata) daRicaricare = true;
+  } catch {}
+}
+function inEsercizio() { return /^#\/(sessione|esercizio)/.test(location.hash); }
+function ricaricaSeServe() { if (daRicaricare && !inEsercizio()) location.reload(); }
+document.addEventListener('visibilitychange', async () => { if (!document.hidden) { await controllaVersione(); ricaricaSeServe(); } });
+setInterval(async () => { await controllaVersione(); ricaricaSeServe(); }, 5 * 60_000);
+
 async function avvia() {
   let s;
   try {
@@ -111,6 +129,7 @@ async function avvia() {
     svuota(app, h('div', { class: 'login card' }, h('p', 'Il server non risponde. Controlla la connessione e ricarica la pagina.')));
     return;
   }
+  versioneCaricata = s.versione;
   if (!s.passwordConfigurata) {
     svuota(app, h('div', { class: 'login card' }, h('h2', 'Manca la password'),
       h('p', 'Imposta la variabile APP_PASSWORD su Railway, poi ricarica questa pagina.')));

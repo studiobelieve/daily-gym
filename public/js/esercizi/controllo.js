@@ -6,12 +6,13 @@ import { valutaRisposta } from '../shared/testo.js';
 
 export async function controllaRisposta(it, risposta) {
   const esito = valutaRisposta(it.risposte, risposta, { testo: it.testo });
-  if (esito !== 'sbagliata' || !String(risposta || '').trim()) return { giusto: esito !== 'sbagliata', esito, nota: '' };
+  // Identica alla soluzione: niente da spiegare. Negli altri casi decide l'AI, che legge cosa hai scritto davvero.
+  if (esito === 'esatta' || !String(risposta || '').trim()) return { giusto: esito === 'esatta', esito, nota: '' };
   try {
     const r = await api.post('/api/verifica', { istruzione: it.istruzione, testo: it.testo, risposte: it.risposte, scritto: risposta });
     if (r.giusta) return { giusto: true, esito: 'accettata', nota: r.nota };
     return { giusto: false, esito: 'sbagliata', nota: r.nota };
   } catch {
-    return { giusto: false, esito: 'sbagliata', nota: '' };
+    return { giusto: esito !== 'sbagliata', esito, nota: '' };
   }
 }
