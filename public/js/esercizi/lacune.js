@@ -3,7 +3,7 @@
 import { h, svuota, caricamento } from '../ui.js';
 import { api } from '../api.js';
 import { inglese, suggerimentoTocco } from '../parola.js';
-import { confronta } from '../shared/testo.js';
+import { controllaRisposta } from './controllo.js';
 
 export async function avvia(box, opz) {
   svuota(box, caricamento('Preparo esercizi sui tuoi errori ricorrenti…'));
@@ -41,13 +41,16 @@ export async function avvia(box, opz) {
       input.addEventListener('keydown', (e) => { if (e.key === 'Enter') ok(input.value); });
       setTimeout(() => input.focus(), 30);
     });
-    const esito = risposta.trim() ? it.risposte.map((r) => confronta(r, risposta)).find((x) => x !== 'sbagliata') || 'sbagliata' : 'sbagliata';
-    const giusto = esito !== 'sbagliata';
+    if (risposta.trim()) svuota(box, caricamento('Controllo la risposta…'));
+    const { giusto, esito, nota } = await controllaRisposta(it, risposta);
     esiti.push({ categoria: it.categoria, giusto });
     await new Promise((ok) => svuota(box, h('div', { class: 'card stack' },
       h('div', { class: 'row between' }, h('div', { style: { fontSize: '1.8rem' } }, giusto ? (esito === 'quasi' ? '≈ Quasi, va bene' : '✓ Giusto') : '✗'), h('span', { class: 'chip inglese' }, it.categoria)),
-      h('div', h('span', { class: 'muted small' }, 'Risposta: '), inglese(it.risposte[0], { tag: 'strong', classe: 'giusto' })),
+      giusto && esito !== 'esatta' ? h('div', { class: 'small' }, 'Hai scritto: ', h('strong', risposta)) : null,
+      h('div', h('span', { class: 'muted small' }, giusto ? 'Soluzione: ' : 'Risposta: '), inglese(it.risposte[0], { tag: 'strong', classe: 'giusto' })),
+      it.tipo === 'correggi' && it.risposte.length > 1 ? h('div', h('span', { class: 'muted small' }, 'Frase corretta: '), inglese(it.risposte[it.risposte.length - 1], { tag: 'span' })) : null,
       risposta.trim() && !giusto ? h('div', { class: 'small' }, 'Hai scritto: ', h('span', { class: 'barrato' }, risposta)) : null,
+      nota ? h('p', { class: 'small', style: { margin: 0 } }, (giusto ? '👍 ' : '') + nota) : null,
       it.spiegazione ? h('p', { class: 'small', style: { margin: 0 } }, it.spiegazione) : null,
       suggerimentoTocco(),
       h('button', { class: 'btn primario pieno', onclick: ok }, i < dati.items.length - 1 ? 'Avanti' : 'Fine'))));

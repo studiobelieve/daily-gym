@@ -52,6 +52,8 @@ Tutto è collegato: gli errori dello speaking diventano lacune, le lacune divent
 
 **Grammatica** (nella sessione completa tutti i giorni, nella corta lunedì, mercoledì e venerdì): un percorso per livello (A1 → C1, 51 argomenti nell'ordine dei sillabi CEFR), che parte dal tuo livello. Ogni argomento ha prima la spiegazione in italiano (quando si usa, la regola, esempi toccabili, gli errori tipici di chi parla italiano, un trucco) e poi 8 esercizi nuovi ogni volta (scegli, completa, correggi, traduci). Un argomento è *consolidato* quando fai almeno l'80% in due giorni diversi; quando l'80% degli argomenti del livello è consolidato passi al successivo. Ogni 4 sessioni torna un argomento già consolidato per ripasso. Le risposte sbagliate entrano nelle lacune. Dalla Palestra: *Grammatica* (il prossimo argomento) o *Percorso di grammatica* (tutti gli argomenti con lo stato).
 
+**Risposte scritte flessibili** (grammatica e lacune): vale anche la risposta più lunga ("I saw" o la frase intera al posto di "saw"), le forme contratte ("I've" = "I have") e, se il controllo automatico la segna sbagliata, l'AI la ricontrolla e ti dice perché è giusta o cosa non va.
+
 **Carte senza doppioni**: la stessa parola non si può salvare due volte (maiuscole, spazi e punto finale non contano). Se tocchi una parola che hai già, il pannello te lo dice e non la salva.
 
 **Curiosità**: fatti strani ma veri (la Grande guerra degli emù, l'epidemia di ballo del 1518, l'alluvione di melassa di Boston…), da raccontare.

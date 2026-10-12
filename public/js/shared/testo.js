@@ -69,6 +69,40 @@ export function confronta(atteso, scritto) {
   return 'sbagliata';
 }
 
+// Forme contratte scritte per intero, così "I've seen" e "I have seen" valgono uguale.
+export function espandi(s) {
+  return normalizza(s)
+    .replace(/\bwon't\b/g, 'will not').replace(/\bcan't\b/g, 'cannot').replace(/\bshan't\b/g, 'shall not')
+    .replace(/n't\b/g, ' not').replace(/'ve\b/g, ' have').replace(/'m\b/g, ' am').replace(/'re\b/g, ' are')
+    .replace(/'ll\b/g, ' will').replace(/'d\b/g, ' would').replace(/\bcan not\b/g, 'cannot')
+    .replace(/\s+/g, ' ').trim();
+}
+
+// Esercizi a risposta scritta (grammatica, lacune): accetta la risposta giusta anche se scritta "più lunga".
+// Es. atteso "saw", scritto "I saw" o la frase intera "Yesterday I saw Marco" → giusta, perché le parole
+// in più vengono dalla frase dell'esercizio. Restituisce 'esatta' | 'quasi' | 'sbagliata'.
+const PAROLE_LIBERE = new Set(['i', 'you', 'he', 'she', 'it', 'we', 'they', 'the', 'a', 'an', 'to', 'not']);
+export function valutaRisposta(risposte, scritto, { testo = '' } = {}) {
+  if (!String(scritto || '').trim()) return 'sbagliata';
+  const B = espandi(scritto).split(' ');
+  const contesto = new Set(espandi(testo).split(' '));
+  let migliore = 'sbagliata';
+  for (const atteso of risposte) {
+    const c = confronta(espandi(atteso), espandi(scritto));
+    if (c === 'esatta') return 'esatta';
+    if (c === 'quasi') migliore = 'quasi';
+    const A = espandi(atteso).split(' ');
+    for (let i = 0; i + A.length <= B.length; i++) {
+      if (A.every((w, k) => w === B[i + k] || (w.length >= 5 && levenshtein(w, B[i + k]) <= 1))) {
+        const altre = [...B.slice(0, i), ...B.slice(i + A.length)];
+        if (altre.every((w) => contesto.has(w) || PAROLE_LIBERE.has(w))) return 'esatta';
+      }
+    }
+    if (A.length > 3 && confrontaFrase(atteso, scritto).punteggio >= 90) migliore = 'quasi';
+  }
+  return migliore;
+}
+
 // Dettato: allinea le parole attese a quelle scritte (sottosequenza comune più lunga)
 // e restituisce, per ogni parola attesa, se è stata scritta giusta.
 // Una parola con un refuso minimo (1 lettera su parole lunghe) conta mezzo punto.

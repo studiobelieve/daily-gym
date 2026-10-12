@@ -29,6 +29,10 @@ Hi Mark, I am writing to confirm our meeting next Tuesday. See you soon.
       `[DOMANDA] ${id} || What did the Romans build? || Roads and bridges || Pyramids || Skyscrapers`,
     ]).join('\n');
   }],
+  ['fair English teacher checking one answer', (corpo) => {
+    const scritto = (corpo.messages[0].content.match(/<testo_utente>([^<]*)</) || [])[1] || '';
+    return /went|saw/i.test(scritto) ? '[GIUSTA] si\n[NOTA] Va bene anche così: il verbo è corretto.' : '[GIUSTA] no\n[NOTA] Il tempo verbale è sbagliato.';
+  }],
   ['excellent English grammar teacher', () => `[TITOLO] Present perfect o past simple?
 [QUANDO] Il present perfect collega il passato al presente; il past simple parla di un momento finito.
 [REGOLA] Soggetto + have/has + participio passato

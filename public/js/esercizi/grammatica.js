@@ -3,7 +3,7 @@
 import { h, svuota, caricamento, mescola } from '../ui.js';
 import { api } from '../api.js';
 import { inglese, suggerimentoTocco } from '../parola.js';
-import { confronta, confrontaFrase } from '../shared/testo.js';
+import { controllaRisposta } from './controllo.js';
 
 export async function avvia(box, opz) {
   svuota(box, caricamento('Preparo la lezione di grammatica…'));
@@ -53,14 +53,18 @@ export async function avvia(box, opz) {
       input.addEventListener('keydown', (e) => { if (e.key === 'Enter') ok(input.value); });
       if (it.tipo !== 'scegli') setTimeout(() => input.focus(), 30);
     });
-    const valuta = (r) => (it.tipo === 'traduci' && r.split(/\s+/).length > 3 ? (confrontaFrase(r, risposta).punteggio >= 90 ? 'giusta' : 'sbagliata') : confronta(r, risposta));
-    const esito = risposta.trim() ? it.risposte.map(valuta).find((x) => x !== 'sbagliata') || 'sbagliata' : 'sbagliata';
-    const giusto = esito !== 'sbagliata';
+    if (it.tipo !== 'scegli' && risposta.trim()) svuota(box, caricamento('Controllo la risposta…'));
+    const { giusto, esito, nota } = it.tipo === 'scegli'
+      ? { giusto: it.risposte.some((r) => r.toLowerCase() === risposta.toLowerCase()), esito: '', nota: '' }
+      : await controllaRisposta(it, risposta);
     esiti.push({ giusto, risposta, corretta: it.risposte[0], spiegazione: it.spiegazione });
     await new Promise((ok) => svuota(box, h('div', { class: 'card stack' },
       h('div', { style: { fontSize: '1.8rem' } }, giusto ? (esito === 'quasi' ? '≈ Quasi, va bene' : '✓ Giusto') : '✗'),
-      h('div', h('span', { class: 'muted small' }, 'Risposta: '), inglese(it.risposte[0], { tag: 'strong', classe: 'giusto' })),
+      giusto && risposta.trim() && esito !== 'esatta' && esito !== '' ? h('div', { class: 'small' }, 'Hai scritto: ', h('strong', risposta)) : null,
+      h('div', h('span', { class: 'muted small' }, giusto ? 'Soluzione: ' : 'Risposta: '), inglese(it.risposte[0], { tag: 'strong', classe: 'giusto' })),
+      it.tipo === 'correggi' && it.risposte.length > 1 ? h('div', h('span', { class: 'muted small' }, 'Frase corretta: '), inglese(it.risposte[it.risposte.length - 1], { tag: 'span' })) : null,
       risposta.trim() && !giusto ? h('div', { class: 'small' }, 'Hai scritto: ', h('span', { class: 'barrato' }, risposta)) : null,
+      nota ? h('p', { class: 'small', style: { margin: 0 } }, (giusto ? '👍 ' : '') + nota) : null,
       it.spiegazione ? h('p', { class: 'small', style: { margin: 0 } }, it.spiegazione) : null,
       h('button', { class: 'btn primario pieno', onclick: ok }, i < items.length - 1 ? 'Avanti' : 'Fine'))));
   }

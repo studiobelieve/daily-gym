@@ -262,3 +262,16 @@ test('Grammatica: livello di partenza, prossimo argomento, consolidamento', asyn
   // ogni 4 sessioni, ripasso di un argomento consolidato da più di 14 giorni
   assert.deepEqual(g.prossimoArgomento('B1', tutti, { oggi: '2026-10-06', sessioni: 3 }).ripasso, true);
 });
+
+test('Risposte scritte: accettate anche più lunghe o con forme contratte', async () => {
+  const { valutaRisposta: v } = await import('../public/js/shared/testo.js');
+  const t = 'Yesterday I have seen Marco at the station.';
+  assert.equal(v(['saw'], 'I saw', { testo: t }), 'esatta');
+  assert.equal(v(['saw'], 'Yesterday I saw Marco at the station.', { testo: t }), 'esatta');
+  assert.equal(v(['saw'], 'I have seen', { testo: t }), 'sbagliata');
+  assert.equal(v(['saw'], 'I saw him', { testo: t }), 'sbagliata', 'parole nuove non dalla frase: decide l\'AI');
+  assert.equal(v(['have lived'], "I've lived", { testo: 'I ___ (live) here since 2019.' }), 'esatta');
+  assert.equal(v(['did not go'], "didn't go"), 'esatta');
+  assert.equal(v(['have lived'], 'lived', { testo: 'I ___ (live) here since 2019.' }), 'sbagliata');
+  assert.equal(v(['saw'], ''), 'sbagliata');
+});
