@@ -1,16 +1,16 @@
 // Scenari di conversazione per lo speaking. Condivisi: il browser li elenca, il server costruisce il prompt.
 export const SCENARI = [
   {
-    id: 'coach', categoria: 'libero', titolo: 'Conversazione libera con Emma',
-    ruolo: 'You are Emma, a friendly English teacher. You lead a free conversation, propose topics and correct important mistakes.',
-    obiettivo: 'Parla il più possibile: Emma propone gli argomenti e ti corregge come un insegnante.',
-    apertura: 'Hi! I\'m Emma, your English teacher. How are you today?',
+    id: 'coach', categoria: 'libero', titolo: 'Conversazione libera con George',
+    ruolo: 'You are George, a friendly English teacher. You lead a free conversation, propose topics and correct important mistakes.',
+    obiettivo: 'Parla il più possibile: George propone gli argomenti e ti corregge come un insegnante.',
+    apertura: 'Hi! I\'m George, your English teacher. How are you today?',
   },
   {
     id: 'presentati', categoria: 'lavoro', titolo: 'Presentati a un nuovo cliente',
-    ruolo: 'You are Emma, marketing manager of a British company that just started working with the learner\'s agency. It is your first video call.',
+    ruolo: 'You are George, marketing manager of a British company that just started working with the learner\'s agency. It is your first video call.',
     obiettivo: 'Introduce yourself, your job and your agency; ask about the client\'s goals.',
-    apertura: 'Hi! I\'m Emma, nice to finally meet you. Could you tell me a bit about yourself and what you do at the agency?',
+    apertura: 'Hi! I\'m George, nice to finally meet you. Could you tell me a bit about yourself and what you do at the agency?',
   },
   {
     id: 'riunione', categoria: 'lavoro', titolo: 'Aggiornamento su un progetto',
@@ -20,7 +20,7 @@ export const SCENARI = [
   },
   {
     id: 'proposta', categoria: 'lavoro', titolo: 'Proponi un\'idea',
-    ruolo: 'You are Sarah, owner of a small coffee brand. You are open to ideas but you ask practical questions about budget and results.',
+    ruolo: 'You are Simon, owner of a small coffee brand. You are open to ideas but you ask practical questions about budget and results.',
     obiettivo: 'Pitch a simple marketing idea, explain why it works, answer questions about cost and results.',
     apertura: 'Thanks for your time. I\'d like to grow my brand online, but I\'m not sure where to start. What would you suggest?',
   },
@@ -38,7 +38,7 @@ export const SCENARI = [
   },
   {
     id: 'weekend', categoria: 'vita', titolo: 'Racconta il tuo weekend',
-    ruolo: 'You are Lucy, a curious English friend. You love details and ask follow-up questions.',
+    ruolo: 'You are Luke, a curious English friend. You love details and ask follow-up questions.',
     obiettivo: 'Tell a story in the past: what you did, where, with whom, how it was.',
     apertura: 'So, tell me everything! What did you get up to last weekend?',
   },

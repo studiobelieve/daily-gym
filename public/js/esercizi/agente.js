@@ -1,5 +1,5 @@
 // Speaking con un agente vocale vero (ElevenLabs Agents): conversazione continua a mani libere,
-// come una telefonata. Emma guida la conversazione, propone gli argomenti e corregge come un'insegnante.
+// come una telefonata. George guida la conversazione, propone gli argomenti e corregge come un insegnante.
 // Non finisce mai da sola: si chiude con "Termina", poi arriva il report e gli errori diventano lacune.
 import { h, svuota, caricamento, toast, durata } from '../ui.js';
 import { api } from '../api.js';
@@ -66,13 +66,13 @@ export async function avvia(box, opz) {
   let diarioEl = null;
   const scelta = await new Promise((ok) => svuota(box, h('div', { class: 'card stack' },
     h('div', { class: 'orb' }),
-    h('h2', { class: 'center', style: { margin: 0 } }, giocoDiRuolo ? sc.titolo : 'Parla con Emma'),
+    h('h2', { class: 'center', style: { margin: 0 } }, giocoDiRuolo ? sc.titolo : 'Parla con George'),
     h('p', { class: 'small center', style: { margin: 0 } }, giocoDiRuolo
-      ? `Gioco di ruolo: ${sc.obiettivo} Emma ti corregge come un'insegnante.`
-      : 'Una conversazione vera, a voce, senza pulsanti da tenere premuti. Emma propone gli argomenti, ti corregge e ti fa ripetere. Va avanti finché non la chiudi tu.'),
+      ? `Gioco di ruolo: ${sc.obiettivo} George ti corregge come un insegnante.`
+      : 'Una conversazione vera, a voce, senza pulsanti da tenere premuti. George propone gli argomenti, ti corregge e ti fa ripetere. Va avanti finché non la chiudi tu.'),
     h('ul', { class: 'small muted', style: { margin: 0, paddingLeft: '20px' } },
-      h('li', 'Usa le cuffiette se puoi: l\'audio è più pulito e lei non sente se stessa.'),
-      h('li', 'Parla normalmente: capisce da sola quando hai finito. Puoi anche interromperla.'),
+      h('li', 'Usa le cuffiette se puoi: l\'audio è più pulito e lui non sente se stesso.'),
+      h('li', 'Parla normalmente: capisce da solo quando hai finito. Puoi anche interromperlo.'),
       h('li', 'Alla fine premi "Termina": arriva il report e gli errori entrano nel tuo allenamento.')),
     h('button', { class: 'btn primario pieno', onclick: () => {
       // Dentro il tocco: sblocca l'audio e chiede il microfono (su iPhone deve succedere qui).
@@ -86,7 +86,7 @@ export async function avvia(box, opz) {
     h('button', { class: 'btn fantasma piccolo', onclick: () => ok('classico') }, 'Usa la modalità "premi per parlare"'))));
   if (scelta === 'classico') return 'classico';
 
-  svuota(box, caricamento('Mi collego con Emma…'));
+  svuota(box, caricamento('Mi collego con George…'));
   let SDK;
   try {
     if (!window.isSecureContext) throw new Error('Serve una connessione sicura (https) per usare il microfono.');
@@ -110,7 +110,7 @@ export async function avvia(box, opz) {
   const statoTesto = h('div', { class: 'small center muted' }, 'Connessione…');
   const tempo = h('span', { class: 'tiny muted' }, '0 s');
   const muto = h('button', { class: 'btn piccolo' }, '🔇 Muto');
-  const nonSento = h('button', { class: 'btn piccolo', onclick: () => { riattivaAudio(); nota('audio riattivato a mano'); } }, '🔊 Non sento Emma');
+  const nonSento = h('button', { class: 'btn piccolo', onclick: () => { riattivaAudio(); nota('audio riattivato a mano'); } }, '🔊 Non sento George');
   diarioEl = h('pre', { class: 'tiny muted', style: { whiteSpace: 'pre-wrap', margin: 0 } });
   const dettagli = h('details', { class: 'tiny muted' }, h('summary', 'Dettagli tecnici (se qualcosa non va)'), diarioEl);
   const fine = h('button', { class: 'btn primario pieno' }, 'Termina e ricevi il report');
@@ -159,7 +159,7 @@ export async function avvia(box, opz) {
       onModeChange: ({ mode }) => {
         nota('modalità: ' + mode);
         orb.className = 'orb ' + (mode === 'speaking' ? 'parla' : 'ascolta');
-        statoTesto.textContent = mode === 'speaking' ? 'Emma sta parlando… (puoi interromperla)' : microMuto ? 'Microfono in pausa' : 'Ti ascolto…';
+        statoTesto.textContent = mode === 'speaking' ? 'George sta parlando… (puoi interromperlo)' : microMuto ? 'Microfono in pausa' : 'Ti ascolto…';
       },
       onError: (msg) => { console.warn('[agente]', msg); nota('errore: ' + (msg && msg.message ? msg.message : msg)); },
       onDisconnect: (d) => {
@@ -169,7 +169,7 @@ export async function avvia(box, opz) {
         if (tentativi++ < 3) {
           statoTesto.textContent = 'Linea caduta, mi ricollego…';
           orb.className = 'orb connessione';
-          const contesto = storia.slice(-12).map((t) => `${t.ruolo === 'io' ? 'STUDENT' : 'EMMA'}: ${t.testo}`).join('\n');
+          const contesto = storia.slice(-12).map((t) => `${t.ruolo === 'io' ? 'STUDENT' : 'GEORGE'}: ${t.testo}`).join('\n');
           setTimeout(() => collega(contesto).catch(() => { statoTesto.textContent = 'Non riesco a ricollegarmi. Premi Termina per il report.'; }), 800);
         } else {
           statoTesto.textContent = 'Connessione persa. Premi Termina per il report.';
@@ -189,7 +189,7 @@ export async function avvia(box, opz) {
 
   svuota(box, h('div', { class: 'stack' },
     h('div', { class: 'card stack' },
-      h('div', { class: 'row between' }, h('strong', giocoDiRuolo ? sc.titolo : 'Conversazione con Emma'), tempo),
+      h('div', { class: 'row between' }, h('strong', giocoDiRuolo ? sc.titolo : 'Conversazione con George'), tempo),
       orb, statoTesto,
       h('div', { class: 'row', style: { justifyContent: 'center' } }, muto, nonSento),
       h('p', { class: 'tiny muted center', style: { margin: 0 } }, 'Su iPhone, se la voce è bassissima, usa le cuffiette o alza il volume: con il microfono acceso iOS a volte usa la capsula delle chiamate.')),
@@ -202,6 +202,9 @@ export async function avvia(box, opz) {
   } catch (err) {
     clearInterval(timer);
     nota('errore di avvio: ' + (err.name || '') + ' ' + err.message);
+    if (/quota_exceeded|run out of credits|crediti/i.test(err.message)) {
+      return erroreAvvio(box, 'Hai finito i crediti di ElevenLabs: l\'agente vocale li consuma a ogni minuto di conversazione. Per riattivarlo ricarica i crediti o passa a un piano superiore su elevenlabs.io (Impostazioni › Abbonamento). Intanto puoi usare la modalità "premi per parlare": usa la voce e il riconoscimento vocale del browser, gratis.', diario);
+    }
     return erroreAvvio(box, 'Non riesco a collegarmi a ElevenLabs. Dettaglio: ' + err.message, diario);
   }
 

@@ -46,8 +46,8 @@ async function conversazione(box, sc, opz) {
   const inizio = Date.now();
   let secondiParlati = 0;
   let occupato = false;
-  const usaServer = stato.voce && puoRegistrare();
-  const usaBrowser = !usaServer && riconoscimentoBrowser();
+  let usaServer = stato.voce && puoRegistrare();
+  let usaBrowser = !usaServer && riconoscimentoBrowser();
 
   const chat = h('div', { class: 'chat', 'aria-live': 'polite' });
   const info = h('div', { class: 'tiny muted center' });
@@ -132,6 +132,12 @@ async function conversazione(box, sc, opz) {
     } catch (err) {
       occupato = false;
       info.textContent = '';
+      // Crediti ElevenLabs finiti: si passa al riconoscimento vocale del browser (gratis) e si continua.
+      if (err.status === 402 && riconoscimentoBrowser()) {
+        usaServer = false; usaBrowser = true;
+        toast('Crediti ElevenLabs finiti: da ora uso il riconoscimento vocale del browser. Ripeti la frase.');
+        return;
+      }
       toast(err.message, 'errore');
     }
   };

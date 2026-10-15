@@ -29,7 +29,7 @@ Tutto è collegato: gli errori dello speaking diventano lacune, le lacune divent
 **Inglese**
 - *Writing*: una consegna breve al tuo livello. L'AI corregge, spiega gli errori in italiano e mostra come lo direbbe un madrelingua.
 - *Dettato*: frasi lette ad alta voce da scrivere, con la versione lenta.
-- *Speaking con Emma*: un agente vocale vero (ElevenLabs Agents, in tempo reale), come una telefonata.
+- *Speaking con George*: un agente vocale vero (ElevenLabs Agents, in tempo reale), come una telefonata.
   - Non ci sono pulsanti da tenere premuti: lei capisce da sola quando hai finito, e puoi interromperla.
   - Fa l'insegnante: guida la conversazione, propone sempre nuovi argomenti, corregge subito gli errori importanti e ti fa ripetere.
   - Non finisce mai da sola. Quando premi *Termina* ricevi il report, e gli errori finiscono nelle tue **lacune**.

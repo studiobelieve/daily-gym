@@ -11,7 +11,7 @@ const GRUPPI = [
     ['grammatica', 'Spiegazione e poi esercizi, dal tuo livello in su: sali quando consolidi.'],
     ['writing', 'Scrivi un breve testo, l\'AI lo corregge e spiega gli errori.'],
     ['dettato', 'Ascolta frasi e scrivile: orecchio e ortografia.'],
-    ['speaking', 'Conversazione a voce con Emma, la tua insegnante: ti corregge e propone lei gli argomenti, senza fine.'],
+    ['speaking', 'Conversazione a voce con George, il tuo insegnante: ti corregge e propone lui gli argomenti, senza fine.'],
     ['lacune', 'Esercizi mirati sugli errori che fai più spesso.'],
     ['test', 'Rifai il test per ricalibrare il livello.'],
   ]],
