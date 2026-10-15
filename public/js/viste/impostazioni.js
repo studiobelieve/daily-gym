@@ -37,12 +37,21 @@ export async function mostra(box, { vai }) {
   const temaSel = h('select', [['auto', 'Automatico (come il telefono)'], ['dark', 'Scuro'], ['light', 'Chiaro']].map(([v, n]) => h('option', { value: v, selected: v === tema() }, n)));
   temaSel.addEventListener('change', () => { try { localStorage.setItem('dg_tema', temaSel.value); } catch {} applicaTema(temaSel.value); });
 
+  // Crediti ElevenLabs letti dall'account della chiave: piano, consumo, data del rinnovo.
+  const voceBox = h('div', { class: 'tiny muted' });
+  if (d.voce) api.get('/api/voce/abbonamento').then((a) => {
+    const pct = a.limite ? Math.round((a.usati / a.limite) * 100) : 0;
+    svuota(voceBox, `Piano ElevenLabs: ${a.piano} · crediti usati ${a.usati.toLocaleString('it-IT')} su ${a.limite.toLocaleString('it-IT')} (${pct}%)${a.rinnovo ? ` · si rinnovano il ${new Date(a.rinnovo + 'T12:00:00').toLocaleDateString('it-IT', { day: 'numeric', month: 'long' })}` : ''}.`,
+      a.usati >= a.limite ? h('div', { style: { color: 'var(--warning)', marginTop: '4px' } }, 'Crediti finiti: su elevenlabs.io → Developers › Top Up per comprarne (minimo 5 $), oppure profilo › Subscription per cambiare piano.') : null);
+  }).catch((err) => svuota(voceBox, 'Crediti ElevenLabs: ' + err.message));
+
   svuota(box,
     h('h1', 'Impostazioni'),
     h('div', { class: 'card stack' },
       h('h3', 'Servizi'),
       h('p', { class: 'small', style: { margin: 0 } }, d.ai ? '✓ AI attiva (Anthropic)' : '✗ AI spenta: aggiungi ANTHROPIC_API_KEY su Railway'),
-      h('p', { class: 'small', style: { margin: 0 } }, d.voce ? '✓ Voce ElevenLabs attiva' : '○ ElevenLabs non configurato: uso la voce del browser (aggiungi ELEVENLABS_API_KEY per una voce naturale)')),
+      h('p', { class: 'small', style: { margin: 0 } }, d.voce ? '✓ Voce ElevenLabs attiva' : '○ ElevenLabs non configurato: uso la voce del browser (aggiungi ELEVENLABS_API_KEY per una voce naturale)'),
+      voceBox),
     h('div', { class: 'card stack' },
       h('h3', 'Inglese'),
       campo('Livello attuale', livello, 'Di solito non serve toccarlo: si aggiorna da solo. Cambialo solo se i contenuti sono chiaramente troppo facili o difficili.'),

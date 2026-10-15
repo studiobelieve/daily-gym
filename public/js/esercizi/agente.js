@@ -203,7 +203,7 @@ export async function avvia(box, opz) {
     clearInterval(timer);
     nota('errore di avvio: ' + (err.name || '') + ' ' + err.message);
     if (/quota_exceeded|run out of credits|crediti/i.test(err.message)) {
-      return erroreAvvio(box, 'Hai finito i crediti di ElevenLabs: l\'agente vocale li consuma a ogni minuto di conversazione. Per riattivarlo ricarica i crediti o passa a un piano superiore su elevenlabs.io (Impostazioni › Abbonamento). Intanto puoi usare la modalità "premi per parlare": usa la voce e il riconoscimento vocale del browser, gratis.', diario);
+      return erroreAvvio(box, 'Hai finito i crediti di ElevenLabs: l\'agente vocale li consuma a ogni minuto di conversazione. Per riattivarlo, su elevenlabs.io: Developers › Top Up per comprare crediti (minimo 5 $), oppure il tuo profilo › Subscription per cambiare piano. Intanto puoi usare la modalità "premi per parlare": usa la voce e il riconoscimento vocale del browser, gratis.', diario);
     }
     return erroreAvvio(box, 'Non riesco a collegarmi a ElevenLabs. Dettaglio: ' + err.message, diario);
   }
